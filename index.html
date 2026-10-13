@@ -1,289 +1,302 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Label Roll Calculator</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
-<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png"><meta name="theme-color" content="#000000">
 <style>
-*{box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#eeeeee;margin:0;padding:16px;color:#111}
-.calculadora{max-width:620px;margin:10px auto;background:#fff;padding:22px;border-radius:16px;box-shadow:0 3px 14px rgba(0,0,0,.15)}
-h1{text-align:center;font-size:25px;margin:4px 0 5px}
-.sub{text-align:center;color:#777;font-size:13px;margin-bottom:24px}
-.seccion{font-size:13px;font-weight:800;color:#555;border-bottom:2px solid #222;padding-bottom:7px;margin-top:22px;text-transform:uppercase}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.campo{margin-top:15px}
-label{display:block;font-weight:bold;font-size:14px;margin-bottom:7px}
-input{width:100%;padding:13px;font-size:19px;border:2px solid #aaa;border-radius:8px;background:#fff}
-input:focus{outline:none;border-color:#222}
-.unidad{font-size:11px;color:#777;margin-top:3px}
-button{width:100%;padding:17px;margin-top:24px;font-size:19px;font-weight:bold;border:none;border-radius:9px;background:#222;color:#fff;cursor:pointer}
-button:active{transform:scale(.98)}
-.resultado{margin-top:22px;padding:18px;background:#eeeeee;border-radius:11px}
-.resultado h2{font-size:15px;margin:0 0 14px}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.card{background:#fff;border-radius:9px;padding:12px}
-.titulo{font-size:11px;font-weight:bold;color:#666}
-.numero{font-size:27px;font-weight:bold;margin-top:4px}
-.principal{background:#222;color:#fff}
-.principal .titulo{color:#bbb}
-.principal .numero{font-size:31px}
-.nota{margin-top:13px;font-size:12px;color:#666;line-height:1.4}
-.error{margin-top:15px;padding:12px;background:#ffe1e1;color:#9b0000;border-radius:8px;font-weight:bold;display:none}
-@media(max-width:520px){.grid,.result-grid{grid-template-columns:1fr}.calculadora{padding:18px}body{padding:8px}}
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#eee;margin:0;padding:16px;color:#111}
+.calculadora{max-width:680px;margin:10px auto;background:#fff;padding:22px;border-radius:16px;box-shadow:0 3px 14px #0002}h1{text-align:center;font-size:25px;margin:4px 0 5px}.sub{text-align:center;color:#777;font-size:13px;margin-bottom:24px}
+.seccion{font-size:13px;font-weight:800;color:#555;border-bottom:2px solid #222;padding-bottom:7px;margin-top:22px;text-transform:uppercase}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.campo{margin-top:15px}label{display:block;font-weight:bold;font-size:14px;margin-bottom:7px}input{width:100%;padding:13px;font-size:19px;border:2px solid #aaa;border-radius:8px;background:#fff}input:focus{outline:none;border-color:#e30613}.unidad{font-size:11px;color:#777;margin-top:3px}button{width:100%;padding:17px;margin-top:24px;font-size:19px;font-weight:bold;border:none;border-radius:9px;background:#222;color:#fff;cursor:pointer}button:active{transform:scale(.98)}.resultado{margin-top:22px;padding:18px;background:#eee;border-radius:11px}.resultado h2{font-size:15px;margin:0 0 14px}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#fff;border-radius:9px;padding:12px}.titulo{font-size:11px;font-weight:bold;color:#666}.numero{font-size:27px;font-weight:bold;margin-top:4px;overflow-wrap:anywhere}.principal{background:#222;color:#fff}.principal .titulo{color:#bbb}.principal .numero{font-size:31px}.nota{margin-top:13px;font-size:12px;color:#666;line-height:1.5}.error{margin-top:15px;padding:12px;background:#ffe1e1;color:#9b0000;border-radius:8px;font-weight:bold;display:none}.auto-info{background:#f6f6f6;padding:13px;border-left:4px solid #e30613;border-radius:8px;font-size:13px;line-height:1.5;margin-top:13px}.auto-info strong{color:#bd0011}.recomendada{background:#fff;border-left:4px solid #e30613;padding:14px;margin-top:14px;border-radius:9px}.recomendada h3{margin:0 0 8px;font-size:14px}.recomendada p{margin:5px 0;font-size:13px;line-height:1.45}.comparacion{margin-top:15px;overflow-x:auto}.comparacion table{border-collapse:collapse;width:100%;min-width:530px;font-size:12px}.comparacion th,.comparacion td{text-align:left;padding:10px 8px;border-bottom:1px solid #ddd}.comparacion th{background:#222;color:#fff}.comparacion tr.ganadora{background:#ffe9ec;font-weight:bold}.tag{color:#a00011;font-weight:bold}.resaltado{font-size:17px;font-weight:800}.vista-btn{background:#e30613;margin-top:14px;font-size:16px;display:none}.vista-btn:focus-visible,.vista-close:focus-visible{outline:3px solid #e30613;outline-offset:3px}.vista-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.84);padding:12px;align-items:center;justify-content:center}.vista-overlay.abierto{display:flex}.vista-dialogo{width:min(100%,940px);height:min(92dvh,900px);background:#101014;border:1px solid #444;border-radius:13px;display:flex;flex-direction:column;overflow:hidden}.vista-cabecera{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;color:#fff;background:#18181b;font-size:16px;font-weight:bold}.vista-close{width:45px;min-height:45px;margin:0;padding:0;background:#333;color:white;font-size:25px;border-radius:8px}#visor3d{width:100%;flex:1;min-height:0;border:0;background:#0b0b0d}body.vista-abierta{overflow:hidden}.vista-lienzo{flex:1;min-height:0;position:relative;background:radial-gradient(ellipse at center,#252b36,#0b0b0d);overflow:hidden}.vista-lienzo canvas{display:block;width:100%;height:100%}.vista-detalle{position:absolute;left:12px;bottom:12px;right:12px;color:#eee;font-size:12px;pointer-events:none;background:#131820cc;padding:10px;border-radius:8px;line-height:1.5}@media(max-width:520px){.grid,.result-grid{grid-template-columns:1fr}.calculadora{padding:18px}body{padding:8px}}
+.espesor-rapido{grid-column:1/-1;margin-top:4px;border:1px solid #dedee2;border-radius:11px;overflow:hidden;background:#fafafa}.espesor-rapido summary{list-style:none;cursor:pointer;padding:13px 15px;font-size:14px;font-weight:800;color:#222;display:flex;align-items:center;justify-content:space-between}.espesor-rapido summary::-webkit-details-marker{display:none}.espesor-rapido summary:after{content:"+";font-size:22px;color:#d20818}.espesor-rapido[open] summary:after{content:"−"}.espesor-cuerpo{padding:0 15px 15px;border-top:1px solid #e5e5e5}.espesor-cuerpo p{font-size:12px;color:#555;line-height:1.5}.espesor-resultado{display:none;background:#fff;border-left:4px solid #e30613;padding:13px;border-radius:7px;margin-top:12px;font-size:14px}.espesor-resultado strong{font-size:22px}.espesor-resultado button{margin-top:12px;font-size:14px;padding:13px;background:#e30613}.espesor-error{display:none;color:#a40000;background:#ffe3e6;padding:10px;border-radius:7px;font-size:13px;margin-top:10px}.rapido-btn{margin-top:14px;font-size:15px;padding:13px}.hint-rapido{color:#777;font-size:12px}
 
-/* Integración visual aislada: no interviene en los cálculos */
-.vista-btn{background:#e30613;margin-top:14px;font-size:16px;display:none}
-.vista-btn:focus-visible,.vista-close:focus-visible{outline:3px solid #e30613;outline-offset:3px}
-.vista-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.84);padding:12px;align-items:center;justify-content:center}
-.vista-overlay.abierto{display:flex}
-.vista-dialogo{width:min(100%,940px);height:min(92dvh,900px);background:#101014;border:1px solid #444;border-radius:13px;display:flex;flex-direction:column;overflow:hidden}
-.vista-cabecera{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;color:#fff;background:#18181b;font-size:16px;font-weight:bold}
-.vista-close{width:45px;min-height:45px;margin:0;padding:0;background:#333;color:white;font-size:25px;border-radius:8px}
-#visor3d{width:100%;flex:1;min-height:0;border:0;background:#0b0b0d}
-body.vista-abierta{overflow:hidden}
+/* Acceso compacto y contextual a la calculadora de espesor */
+.campo-label-accion{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:23px}
+.campo-label-accion label{margin-bottom:0}
+.boton-mini-espesor{width:auto;flex:none;margin:0;padding:6px 9px;border:1px solid #e30613;border-radius:7px;background:#fff4f5;color:#b80013;font:700 12px/1.15 inherit;font-family:inherit;font-size:12px;cursor:pointer}
+.boton-mini-espesor:hover,.boton-mini-espesor[aria-expanded="true"]{background:#e30613;color:#fff}
+.boton-mini-espesor:focus-visible{outline:3px solid #e30613;outline-offset:2px}
+.espesor-rapido:not([open]){display:none}
+.espesor-rapido summary{display:none}
+.espesor-rapido .espesor-cuerpo{padding-top:14px;border-top:none}
+@media(max-width:370px){.boton-mini-espesor{font-size:11px;padding:5px 6px}}
 </style>
 </head>
 <body>
-
 <div class="calculadora">
-<h1>LABEL ROLL CALCULATOR</h1>
-<div class="sub">Calculadora de producción de rollos</div>
-
+<h1>LABEL ROLL CALCULATOR</h1><div class="sub">Calculadora de producción de rollos</div>
 <div class="seccion">Datos del pedido y material</div>
 <div class="grid">
-  <div class="campo">
-    <label for="total">Cantidad total</label>
-    <input id="total" type="number" min="1" step="1" placeholder="Ej. 300000">
-    <div class="unidad">etiquetas</div>
-  </div>
-  <div class="campo">
-    <label for="avance">Avance</label>
-    <input id="avance" type="number" min="0" step="0.01" placeholder="Ej. 100">
-    <div class="unidad">mm / etiqueta</div>
-  </div>
-  <div class="campo">
-    <label for="separacion">Separación</label>
-    <input id="separacion" type="number" min="0" step="0.01" placeholder="Ej. 1.60">
-    <div class="unidad">mm</div>
-  </div>
-  <div class="campo">
-    <label for="espesor">Espesor</label>
-    <input id="espesor" type="number" min="0" step="0.00001" placeholder="Ej. 0.11521">
-    <div class="unidad">mm</div>
-  </div>
-  <div class="campo">
-    <label for="mandril">Ø mandril</label>
-    <input id="mandril" type="number" min="0" step="0.01" placeholder="Ej. 84">
-    <div class="unidad">mm</div>
-  </div>
-  <div class="campo">
-    <label for="diamMax">Ø máximo</label>
-    <input id="diamMax" type="number" min="0" step="0.01" placeholder="Ej. 150">
-    <div class="unidad">mm</div>
-  </div>
+<div class="campo"><label for="total">Cantidad total</label><input id="total" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 300000"><div class="unidad">etiquetas</div></div>
+<div class="campo"><label for="avance">Avance</label><input id="avance" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 100"><div class="unidad">mm / etiqueta</div></div>
+<div class="campo"><label for="mandril">Ø mandril</label><input id="mandril" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 84"><div class="unidad">mm</div></div>
+<div class="campo"><label for="separacion">Separación</label><input id="separacion" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="0 (si está vacío)"><div class="unidad">mm · si se deja vacío, se considera 0</div></div>
+<div class="campo"><div class="campo-label-accion"><label for="espesor">Espesor</label><button type="button" class="boton-mini-espesor" id="toggleEspesor" aria-controls="espesorRapido" aria-expanded="false" onclick="alternarEspesorRapido()" title="Abrir calculadora rápida de espesor">↗ Calcular espesor</button></div><input id="espesor" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.00001" inputmode="decimal" placeholder="Ej. 0.11521"><div class="unidad">mm</div></div>
+<details class="espesor-rapido" id="espesorRapido"><summary>Calculadora rápida de espesor</summary><div class="espesor-cuerpo"><p>Mide el diámetro exterior de un rollo ya fabricado. Se utilizarán automáticamente el avance, la separación y el mandril introducidos arriba.</p><div class="grid"><div class="campo"><label for="muestraDiametro">Ø exterior medido</label><input id="muestraDiametro" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 148,18"><div class="unidad">mm</div></div><div class="campo"><label for="muestraEtiquetas">Etiquetas del rollo de muestra</label><input id="muestraEtiquetas" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><div class="unidad">etiquetas · cantidad real del rollo medido</div></div></div><button class="rapido-btn" type="button" onclick="calcularEspesorRapido()">CALCULAR ESPESOR</button><div id="espesorError" class="espesor-error" role="alert"></div><div id="espesorResultado" class="espesor-resultado" aria-live="polite"><div>Espesor estimado del conjunto</div><strong id="espesorValor">—</strong><div id="espesorMicras" class="hint-rapido"></div><button type="button" onclick="usarEspesorRapido()">UTILIZAR ESTE ESPESOR EN EL PEDIDO ↑</button></div><p>Modelo geométrico: e = π × (Df² − Di²) / [4 × N × (avance + separación)]. Es un espesor efectivo aproximado del material enrollado (soporte + adhesivo + frontal), no solo del papel. Para más precisión, mide varios rollos sin comprimirlos.</p></div></details>
+<div class="campo"><label for="diamMax">Ø máximo (opcional)</label><input id="diamMax" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Dejar vacío si no se indica"><div class="unidad">mm · con Ø máximo, cálculo automático</div></div>
+<div class="campo"><label for="etiquetasManual">Etiquetas por rollo (opcional)</label><input id="etiquetasManual" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><div class="unidad">Sin Ø máximo, indica este valor</div></div>
+<div class="campo"><label for="anchoRollo">Ancho del rollo</label><input id="anchoRollo" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 45"><div class="unidad">mm (medida axial del rollo)</div></div>
 </div>
+<div class="seccion">Embalaje automático</div>
 
-<div class="seccion">Embalaje</div>
-<div class="grid">
-  <div class="campo">
-    <label for="cajaL">Caja largo</label>
-    <input id="cajaL" type="number" min="0" step="0.01" placeholder="Ej. 400">
-    <div class="unidad">mm</div>
-  </div>
-  <div class="campo">
-    <label for="cajaA">Caja ancho</label>
-    <input id="cajaA" type="number" min="0" step="0.01" placeholder="Ej. 300">
-    <div class="unidad">mm</div>
-  </div>
-  <div class="campo">
-    <label for="cajaH">Caja alto</label>
-    <input id="cajaH" type="number" min="0" step="0.01" placeholder="Ej. 300">
-    <div class="unidad">mm</div>
-  </div>
-  <div class="campo">
-    <label for="anchoRollo">Ancho del rollo</label>
-    <input id="anchoRollo" type="number" min="0" step="0.01" placeholder="Ej. 45">
-    <div class="unidad">mm</div>
-  </div>
-</div>
-
-<button type="button" onclick="calcular()">CALCULAR</button>
-<div id="error" class="error"></div>
-
-<div class="resultado">
-<h2>RESULTADOS</h2>
+<button type="button" onclick="calcular()">CALCULAR</button><div id="error" class="error" role="alert"></div>
+<div class="resultado"><h2>RESULTADOS</h2>
 <div class="result-grid">
-  <div class="card principal"><div class="titulo">ETIQUETAS / ROLLO</div><div id="rEtiquetas" class="numero">—</div></div>
-  <div class="card principal"><div class="titulo">Nº DE ROLLOS</div><div id="rRollos" class="numero">—</div></div>
-  <div class="card"><div class="titulo">Ø FINAL REAL</div><div id="rDiametro" class="numero">—</div></div>
-  <div class="card"><div class="titulo">METROS / ROLLO</div><div id="rMetros" class="numero">—</div></div>
-  <div class="card"><div class="titulo">MÁX. ETIQUETAS POR Ø</div><div id="rMax" class="numero">—</div></div>
-  <div class="card"><div class="titulo">ROLLOS / CAJA</div><div id="rCaja" class="numero">—</div></div>
-  <div class="card"><div class="titulo">Nº DE CAJAS</div><div id="rCajas" class="numero">—</div></div>
-  <div class="card"><div class="titulo">ETIQUETAS PRODUCIDAS</div><div id="rProducidas" class="numero">—</div></div>
+<div class="card principal"><div class="titulo">ETIQUETAS / ROLLO</div><div id="rEtiquetas" class="numero">—</div></div>
+<div class="card principal"><div class="titulo">Nº DE ROLLOS</div><div id="rRollos" class="numero">—</div></div>
+<div class="card"><div class="titulo">Ø FINAL TEÓRICO</div><div id="rDiametro" class="numero">—</div></div>
+<div class="card"><div class="titulo">METROS / ROLLO</div><div id="rMetros" class="numero">—</div></div>
+<div class="card"><div class="titulo" id="tituloMax">MÁX. ETIQUETAS POR Ø</div><div id="rMax" class="numero">—</div></div>
+<div class="card"><div class="titulo">ROLLOS / CAJA</div><div id="rCaja" class="numero">—</div></div>
+<div class="card"><div class="titulo">Nº DE CAJAS</div><div id="rCajas" class="numero">—</div></div>
+<div class="card"><div class="titulo">ETIQUETAS PRODUCIDAS</div><div id="rProducidas" class="numero">—</div></div>
 </div>
- <div id="nota" class="nota"></div>
- <button id="abrirVista" class="vista-btn" type="button" onclick="abrirVista()">◈ VISTA 3D</button>
-</div>
-</div>
-
-<div class="vista-overlay" id="overlayVista" role="presentation">
-  <div class="vista-dialogo" role="dialog" aria-modal="true" aria-label="Vista isométrica del embalaje">
-    <div class="vista-cabecera"><span>VISTA 3D · EMBALAJE</span><button class="vista-close" id="cerrarVista" type="button" onclick="cerrarVista()" aria-label="Cerrar vista">×</button></div>
-    <iframe id="visor3d" title="Animación isométrica de la caja" src="visor-3d.html"></iframe>
-  </div>
-</div>
+<div id="recomendacion" class="recomendada" hidden></div>
+<div id="comparacion" class="comparacion" hidden></div>
+<div id="nota" class="nota" style="display:none"></div><button id="abrirVista" class="vista-btn" type="button" onclick="abrirVista()">◈ VISTA 3D</button>
+</div></div>
+<div class="vista-overlay" id="overlayVista" role="presentation"><div class="vista-dialogo" role="dialog" aria-modal="true" aria-label="Vista isométrica del embalaje"><div class="vista-cabecera"><span>VISTA 3D · EMBALAJE</span><button class="vista-close" id="cerrarVista" type="button" onclick="cerrarVista()" aria-label="Cerrar vista">×</button></div><iframe id="visorOriginal" title="Label Roll 3D v0.8 · animación original de GitHub" src="about:blank" loading="lazy" style="display:none;flex:1;min-height:0;width:100%;border:0;background:#0b0b0d"></iframe><div class="vista-lienzo" id="lienzoAlternativo" style="display:none"><canvas id="visor3d" aria-label="Esquema isométrico de disposición escalonada"></canvas><div id="vistaDetalle" class="vista-detalle"></div></div></div></div>
 <script>
-let embalajeParaVista=null;
-let botonAnterior=null;
+'use strict';
+const CAJAS = Object.freeze([
+ {nombre:'Pequeña',L:300,A:300,H:210},
+ {nombre:'Grande completa',L:400,A:300,H:300},
+ {nombre:'Grande corte 250',L:400,A:300,H:250},
+ {nombre:'Grande corte 200',L:400,A:300,H:200}
+]);
+let embalajeParaVista=null,botonAnterior=null;
 function abrirVista(){
-  if(!embalajeParaVista)return;
-  botonAnterior=document.activeElement;
-  const overlay=document.getElementById('overlayVista');
-  overlay.classList.add('abierto');
-  document.body.classList.add('vista-abierta');
-  document.getElementById('cerrarVista').focus();
-  enviarDatosVista();
-}
-function enviarDatosVista(){
-  const frame=document.getElementById('visor3d');
-  if(embalajeParaVista && frame.contentWindow){
-    frame.contentWindow.postMessage({tipo:'LABEL_ROLL_VISTA',datos:embalajeParaVista},'*');
-  }
+ if(!embalajeParaVista)return;
+ botonAnterior=document.activeElement;
+ document.getElementById('overlayVista').classList.add('abierto');
+ document.body.classList.add('vista-abierta');
+ document.getElementById('cerrarVista').focus();
+ const d=embalajeParaVista,original=d.patron==='Cuadrícula';
+ const frame=document.getElementById('visorOriginal');
+ document.getElementById('lienzoAlternativo').style.display=original?'none':'block';
+ frame.style.display=original?'block':'none';
+ if(original){
+   if(!frame.src.includes('visor-3d.html'))frame.src='https://pive110.github.io/calculadora-rollos/visor-3d.html';
+   enviarVistaOriginal();
+ }else requestAnimationFrame(dibujarVista);
 }
 function cerrarVista(){
-  document.getElementById('overlayVista').classList.remove('abierto');
-  document.body.classList.remove('vista-abierta');
-  // Paramos cualquier animación al ocultar la vista.
-  const frame=document.getElementById('visor3d');
-  if(frame.contentWindow)frame.contentWindow.postMessage({tipo:'LABEL_ROLL_STOP'},'*');
-  if(botonAnterior && botonAnterior.focus)botonAnterior.focus();
+ document.getElementById('overlayVista').classList.remove('abierto');
+ document.body.classList.remove('vista-abierta');
+ const frame=document.getElementById('visorOriginal');
+ if(frame.contentWindow)frame.contentWindow.postMessage({tipo:'LABEL_ROLL_STOP'},'https://pive110.github.io');
+ if(botonAnterior&&botonAnterior.focus)botonAnterior.focus();
 }
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape' && document.getElementById('overlayVista').classList.contains('abierto'))cerrarVista();
-});
-window.addEventListener('load',()=>{
-  document.getElementById('visor3d').addEventListener('load',enviarDatosVista);
-});
-function n(id){ return Number(document.getElementById(id).value); }
-function fmt(x,dec=2){ return Number(x).toLocaleString("es-ES",{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
-function fmt0(x){ return Math.round(x).toLocaleString("es-ES"); }
-
-/* Equivalente a:
-   MAX(FILTER(SEQUENCE(total),(MOD(total,SEQUENCE(total))=0)*(SEQUENCE(total)<=INT(maximo))))
-*/
-function mayorDivisor(total,maximo){
-  let mejor=1;
-  for(let i=1;i*i<=total;i++){
-    if(total%i===0){
-      const d1=i, d2=total/i;
-      if(d1<=maximo && d1>mejor) mejor=d1;
-      if(d2<=maximo && d2>mejor) mejor=d2;
-    }
+function enviarVistaOriginal(){
+ const d=embalajeParaVista,frame=document.getElementById('visorOriginal');
+ if(!d||d.patron!=='Cuadrícula'||!frame.contentWindow)return;
+ const nx=Math.floor((d.L+1e-9)/d.D),ny=Math.floor((d.A+1e-9)/d.D);
+ frame.contentWindow.postMessage({tipo:'LABEL_ROLL_VISTA',datos:{L:d.L,A:d.A,H:d.H,D:d.D,Ar:d.Ar,Di:d.Di,nx,ny,nz:d.nz,total:nx*ny*d.nz}},'https://pive110.github.io');
+}
+document.getElementById('visorOriginal').addEventListener('load',enviarVistaOriginal);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('overlayVista').classList.contains('abierto'))cerrarVista();});
+window.addEventListener('resize',()=>{if(document.getElementById('overlayVista').classList.contains('abierto'))dibujarVista();});
+function centrosCapa(d){
+ const coords=[];const radio=d.D/2, paso=d.D*Math.sqrt(3)/2;
+ if(d.patron==='Cuadrícula'){
+  const nx=Math.floor((d.L+1e-8)/d.D),ny=Math.floor((d.A+1e-8)/d.D);
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)coords.push({x:radio+i*d.D,y:radio+j*d.D});
+ }else if(d.patron==='Escalonado por filas'){
+  const filas=Math.floor((d.A-d.D+1e-8)/paso)+1;
+  for(let j=0;j<filas;j++){
+   const offset=j%2?radio:0;
+   const n=cabenEnFila(d.L,d.D,offset);
+   for(let i=0;i<n;i++)coords.push({x:radio+offset+i*d.D,y:radio+j*paso});
   }
-  return mejor;
+ }else{
+  const columnas=Math.floor((d.L-d.D+1e-8)/paso)+1;
+  for(let i=0;i<columnas;i++){
+   const offset=i%2?radio:0;
+   const n=cabenEnFila(d.A,d.D,offset);
+   for(let j=0;j<n;j++)coords.push({x:radio+i*paso,y:radio+offset+j*d.D});
+  }
+ }
+ return coords;
+}
+function dibujarVista(){
+ const d=embalajeParaVista;if(!d)return;
+ const canvas=document.getElementById('visor3d'),parent=canvas.parentElement;
+ const w=parent.clientWidth,h=parent.clientHeight;
+ if(w<=0||h<=0)return;
+ const ratio=Math.min(window.devicePixelRatio||1,2);
+ canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);
+ const ctx=canvas.getContext('2d');ctx.scale(ratio,ratio);ctx.clearRect(0,0,w,h);
+ // Isometric projection: x toward right-down, y toward left-down, z vertically up.
+ const bx={x:.87,y:.44},by={x:-.87,y:.44},bz={x:0,y:-1.25};
+ const project=(x,y,z)=>({x:x*bx.x+y*by.x+z*bz.x,y:x*bx.y+y*by.y+z*bz.y});
+ const verts=[];for(const x of [0,d.L])for(const y of [0,d.A])for(const z of [0,d.H])verts.push(project(x,y,z));
+ const minX=Math.min(...verts.map(v=>v.x)),maxX=Math.max(...verts.map(v=>v.x));
+ const minY=Math.min(...verts.map(v=>v.y)),maxY=Math.max(...verts.map(v=>v.y));
+ const scale=Math.min((w-55)/(maxX-minX),(h-130)/(maxY-minY));
+ const ox=(w-(maxX-minX)*scale)/2-minX*scale;
+ const oy=(h-45-(maxY-minY)*scale)/2-minY*scale+12;
+ const pt=(x,y,z)=>{const q=project(x,y,z);return{x:ox+q.x*scale,y:oy+q.y*scale};};
+ const path=(pts)=>{ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);ctx.closePath();};
+ const floor=[pt(0,0,0),pt(d.L,0,0),pt(d.L,d.A,0),pt(0,d.A,0)];
+ path(floor);ctx.fillStyle='#353b45';ctx.fill();ctx.strokeStyle='#74808f';ctx.lineWidth=1.5;ctx.stroke();
+ const centers=centrosCapa(d);
+ const items=[];
+ for(let k=0;k<d.nz;k++)for(const c of centers)items.push({x:c.x,y:c.y,z:k*d.Ar});
+ items.sort((a,b)=>(a.x+a.y)-(b.x+b.y)||a.z-b.z);
+ const r=d.D/2, hole=Math.min(d.Di/2,r*.82);
+ const ellipse=(x,y,z,rad)=>{
+  // An approximate projected circular top face under the isometric view.
+  const center=pt(x,y,z);
+  ctx.beginPath();ctx.ellipse(center.x,center.y,rad*scale*1.22,rad*scale*.56,0,0,Math.PI*2);
+ };
+ for(const it of items){
+  const top=pt(it.x,it.y,it.z+d.Ar),bottom=pt(it.x,it.y,it.z);
+  const rx=r*scale*1.22,ry=r*scale*.56;
+  ctx.beginPath();ctx.moveTo(top.x-rx,top.y);ctx.lineTo(bottom.x-rx,bottom.y);
+  ctx.ellipse(bottom.x,bottom.y,rx,ry,0,Math.PI,0,true);
+  ctx.lineTo(top.x+rx,top.y);ctx.closePath();
+  ctx.fillStyle='#b6becb';ctx.fill();ctx.strokeStyle='#5a6471';ctx.lineWidth=.8;ctx.stroke();
+  ellipse(it.x,it.y,it.z+d.Ar,r);ctx.fillStyle='#f7f9fc';ctx.fill();ctx.strokeStyle='#7e899a';ctx.stroke();
+  ellipse(it.x,it.y,it.z+d.Ar,hole);ctx.fillStyle='#535d6c';ctx.fill();ctx.strokeStyle='#a4afbb';ctx.stroke();
+ }
+ // Box edges drawn over roll arrangement; top is intentionally open.
+ const edges=[[[0,0,0],[d.L,0,0]],[[d.L,0,0],[d.L,d.A,0]],[[d.L,d.A,0],[0,d.A,0]],[[0,d.A,0],[0,0,0]],
+ [[0,0,0],[0,0,d.H]],[[d.L,0,0],[d.L,0,d.H]],[[d.L,d.A,0],[d.L,d.A,d.H]],[[0,d.A,0],[0,d.A,d.H]],
+ [[0,0,d.H],[d.L,0,d.H]],[[d.L,0,d.H],[d.L,d.A,d.H]],[[d.L,d.A,d.H],[0,d.A,d.H]],[[0,d.A,d.H],[0,0,d.H]]];
+ ctx.lineWidth=2;ctx.strokeStyle='#ed334e';
+ for(const [a,b] of edges){const u=pt(...a),v=pt(...b);ctx.beginPath();ctx.moveTo(u.x,u.y);ctx.lineTo(v.x,v.y);ctx.stroke();}
+ document.getElementById('vistaDetalle').textContent=`Caja ${d.L} × ${d.A} × ${d.H} mm  ·  ${d.patron}  ·  ${d.capa} rollos/capa × ${d.nz} capas  ·  ${items.length} rollos/caja · vista esquemática (animación original pendiente para escalonado)`;
 }
 
+function alternarEspesorRapido(){
+ const panel=document.getElementById('espesorRapido');
+ panel.open=!panel.open;
+ document.getElementById('toggleEspesor').setAttribute('aria-expanded',String(panel.open));
+ if(panel.open)panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+document.getElementById('espesorRapido').addEventListener('toggle',function(){
+ document.getElementById('toggleEspesor').setAttribute('aria-expanded',String(this.open));
+});
+let espesorRapidoCalculado=null;
+function calcularEspesorRapido(){
+ const err=document.getElementById('espesorError'),box=document.getElementById('espesorResultado');
+ err.style.display='none';box.style.display='none';espesorRapidoCalculado=null;
+ const ids=['muestraDiametro','muestraEtiquetas','mandril','avance'];
+ if(ids.some(id=>document.getElementById(id).value.trim()==='')){err.textContent='Introduce el diámetro exterior medido, las etiquetas de la muestra y los datos de avance, separación y mandril del pedido.';err.style.display='block';return;}
+ const D=n('muestraDiametro'),N=n('muestraEtiquetas'),Di=n('mandril'),Av=n('avance'),S=n('separacion');
+ if(![D,N,Di,Av,S].every(Number.isFinite)||D<=Di||Di<=0||Av<=0||S<0||!Number.isSafeInteger(N)||N<=0){err.textContent='Comprueba los datos: el diámetro medido debe superar el del mandril, N debe ser entero positivo, el avance positivo y la separación no negativa.';err.style.display='block';return;}
+ const e=Math.PI*(D*D-Di*Di)/(4*N*(Av+S));
+ if(!Number.isFinite(e)||e<=0){err.textContent='No se puede obtener un espesor válido con estos datos.';err.style.display='block';return;}
+ espesorRapidoCalculado=e;
+ document.getElementById('espesorValor').textContent=fmt(e,5)+' mm';
+ document.getElementById('espesorMicras').textContent='Equivale a '+fmt(e*1000,2)+' µm (micras)';
+ box.style.display='block';
+}
+function usarEspesorRapido(){
+ if(!(espesorRapidoCalculado>0))return;
+ const campo=document.getElementById('espesor');campo.value=Number(espesorRapidoCalculado.toFixed(8)).toString();
+ document.getElementById('espesorRapido').open=false;
+ campo.focus();
+ document.getElementById('nota').textContent='';
+ document.getElementById('recomendacion').hidden=true;document.getElementById('comparacion').hidden=true;document.getElementById('abrirVista').style.display='none';embalajeParaVista=null;
+}
+function n(id){return Number(document.getElementById(id).value);}
+function fmt(x,dec=2){return Number(x).toLocaleString('es-ES',{minimumFractionDigits:dec,maximumFractionDigits:dec});}
+function fmt0(x){return Math.round(x).toLocaleString('es-ES');}
+function mayorDivisor(total,maximo){let mejor=1;for(let i=1;i*i<=total;i++){if(total%i===0){const d1=i,d2=total/i;if(d1<=maximo&&d1>mejor)mejor=d1;if(d2<=maximo&&d2>mejor)mejor=d2;}}return mejor;}
+function cabenEnFila(largo,diametro,desplazamiento){return Math.max(0,Math.floor((largo-diametro-desplazamiento)/diametro+1e-10)+1);}
+function evaluarPatrones(L,A,D){
+ const cuadX=Math.floor((L+1e-9)/D),cuadY=Math.floor((A+1e-9)/D);
+ const alternativas=[{nombre:'Cuadrícula',capa:cuadX*cuadY,nx:cuadX,ny:cuadY,cuadricula:true}];
+ // Filas paralelas al largo L, desplazamiento de medio diámetro en filas alternas.
+ const paso=D*Math.sqrt(3)/2;
+ if(L>=D&&A>=D){
+   const filas=Math.floor((A-D+1e-9)/paso)+1;
+   const llenas=Math.ceil(filas/2),cortas=Math.floor(filas/2);
+   const completas=cabenEnFila(L,D,0),alternas=cabenEnFila(L,D,D/2);
+   alternativas.push({nombre:'Escalonado por filas',capa:llenas*completas+cortas*alternas,cuadricula:false});
+   const columnas=Math.floor((L-D+1e-9)/paso)+1;
+   const larg=Math.ceil(columnas/2),cort=Math.floor(columnas/2);
+   const completasY=cabenEnFila(A,D,0),alternasY=cabenEnFila(A,D,D/2);
+   alternativas.push({nombre:'Escalonado por columnas',capa:larg*completasY+cort*alternasY,cuadricula:false});
+ }
+ return alternativas.sort((a,b)=>b.capa-a.capa||(a.cuadricula?-1:1))[0];
+}
+function optimizarCajas(D,Ar,rollos){
+ return CAJAS.map(caja=>{
+  const patron=evaluarPatrones(caja.L,caja.A,D);
+  const capas=Math.floor((caja.H+1e-9)/Ar),capacidad=patron.capa*capas;
+  const cajas=capacidad>0?Math.ceil(rollos/capacidad):0;
+  const volumenTotal=cajas*caja.L*caja.A*caja.H;
+  const ultimos=capacidad>0?rollos-(cajas-1)*capacidad:0;
+  return {...caja,patron,capas,capacidad,cajas,volumenTotal,ultimos,huecos:capacidad>0?cajas*capacidad-rollos:0,huecoSuperior:capacidad>0?caja.H-capas*Ar:0};
+ });
+}
+function mostrarComparacion(opciones,mejor){
+ const tabla=document.getElementById('comparacion');tabla.hidden=false;
+ const filas=opciones.map(o=>{
+  const marca=o===mejor?' <span class="tag">★</span>':'';
+  return `<tr class="${o===mejor?'ganadora':''}"><td>${o.L}×${o.A}×${o.H}${marca}</td><td>${o.capacidad?fmt0(o.capacidad):'No cabe'}</td><td>${o.capacidad?fmt0(o.cajas):'—'}</td><td>${o.capacidad?o.patron.nombre:'—'}</td></tr>`;
+ }).join('');
+ tabla.innerHTML=`<table><thead><tr><th>Caja (mm)</th><th>Rollos/caja</th><th>Cajas</th><th>Disposición</th></tr></thead><tbody>${filas}</tbody></table>`;
+}
 function calcular(){
-  const error=document.getElementById("error");
-  error.style.display="none";
-  embalajeParaVista=null;
-  document.getElementById('abrirVista').style.display='none';
-
-  const total=n("total"), Av=n("avance"), S=n("separacion");
-  const e=n("espesor"), Di=n("mandril"), Dmax=n("diamMax");
-  const L=n("cajaL"), A=n("cajaA"), H=n("cajaH"), Ar=n("anchoRollo");
-
-  if (
-    ["total", "avance", "separacion", "espesor", "mandril", "diamMax"].some(
-      id => document.getElementById(id).value.trim() === ""
-    ) ||
-    !Number.isSafeInteger(total) || total <= 0 ||
-    !Number.isFinite(Av) || Av <= 0 ||
-    !Number.isFinite(S) || S < 0 ||
-    !Number.isFinite(e) || e <= 0 ||
-    !Number.isFinite(Di) || Di <= 0 ||
-    !Number.isFinite(Dmax) || Dmax <= 0
-  ) {
-    error.textContent = "Revisa los datos: la separación puede ser 0 mm; los demás campos de producción deben ser positivos.";
-    error.style.display = "block";
-    return;
-  }
-  if(Dmax<=Di){
-    error.textContent="El diámetro máximo debe ser mayor que el diámetro del mandril.";
-    error.style.display="block"; return;
-  }
-
-  /* Excel C15:
-     PI()*(Df^2-Di^2)/(4*(Av+S)*e)
-     Aquí Df = diámetro máximo permitido.
-  */
-  const maxFisico=Math.floor(Math.PI*(Dmax**2-Di**2)/(4*(Av+S)*e));
-
-  if(maxFisico<1){
-    error.textContent="Con estos parámetros no cabe ni una etiqueta dentro del diámetro máximo.";
-    error.style.display="block"; return;
-  }
-
-  const limite=Math.min(total,maxFisico);
-  const etiquetas=mayorDivisor(total,limite);
-  const rollos=total/etiquetas;
-
-  /* Excel C8:
-     SQRT(Di^2+(4*N*(Av+S)*e/PI()))
-  */
-  const Df=Math.sqrt(Di**2+(4*etiquetas*(Av+S)*e/Math.PI));
-
-  /* Excel Q6:
-     SUM(Av+S)*N/1000
-  */
-  const metros=(Av+S)*etiquetas/1000;
-
-  let rollosCaja="—", cajas="—";
-  if(L>0 && A>0 && H>0 && Ar>0){
-    /* Equivalente a:
-       INT(L/Df)*INT(A/Df)*INT(H/Ar)
-       El rollo se considera tumbado, usando dos diámetros y el ancho.
-    */
-    rollosCaja=Math.floor(L/Df)*Math.floor(A/Df)*Math.floor(H/Ar);
-    cajas=rollosCaja>0 ? Math.ceil(rollos/rollosCaja) : "—";
-    // Solo enviamos a la vista la distribución YA calculada por la calculadora.
-    // No se aplica aquí un segundo algoritmo ni holguras nuevas.
-    const nx=Math.floor(L/Df),ny=Math.floor(A/Df),nz=Math.floor(H/Ar);
-    if(rollosCaja>0 && rollosCaja<=300 && Di<Df){
-      embalajeParaVista={L,A,H,D:Df,Ar,Di,nx,ny,nz,total:rollosCaja};
-      document.getElementById('abrirVista').style.display='block';
-    }
-  }
-
-  document.getElementById("rEtiquetas").textContent=fmt0(etiquetas);
-  document.getElementById("rRollos").textContent=fmt0(rollos);
-  document.getElementById("rDiametro").textContent=fmt(Df,2)+" mm";
-  document.getElementById("rMetros").textContent=fmt(metros,2)+" m";
-  document.getElementById("rMax").textContent=fmt0(maxFisico);
-  document.getElementById("rCaja").textContent=typeof rollosCaja==="number" ? fmt0(rollosCaja) : rollosCaja;
-  document.getElementById("rCajas").textContent=typeof cajas==="number" ? fmt0(cajas) : cajas;
-  document.getElementById("rProducidas").textContent=fmt0(etiquetas*rollos);
-
-  let texto="Selección automática: mayor divisor de la cantidad total que no supera el máximo físico permitido por el diámetro.";
-  if(typeof rollosCaja==='number' && rollosCaja>300) texto+=' La vista 3D de prueba admite hasta 300 rollos por caja.';
-  if(rollosCaja===0) texto+=" Con las dimensiones indicadas no cabe ningún rollo en la caja.";
-  document.getElementById("nota").textContent=texto;
+ const error=document.getElementById('error');error.style.display='none';
+ embalajeParaVista=null;document.getElementById('abrirVista').style.display='none';document.getElementById('recomendacion').hidden=true;document.getElementById('comparacion').hidden=true;
+ const total=n('total'),Av=n('avance'),S=n('separacion'),e=n('espesor'),Di=n('mandril'),Dmax=n('diamMax'),Ar=n('anchoRollo');
+ const hayDmax=document.getElementById('diamMax').value.trim()!=='';
+ const hayManual=document.getElementById('etiquetasManual').value.trim()!=='';
+ const nManual=n('etiquetasManual');
+ const prod=['total','avance','espesor','mandril'];
+ if(prod.some(id=>document.getElementById(id).value.trim()==='')||!Number.isSafeInteger(total)||total<=0||!Number.isFinite(Av)||Av<=0||!Number.isFinite(S)||S<0||!Number.isFinite(e)||e<=0||!Number.isFinite(Di)||Di<=0){
+   error.textContent='Revisa los datos de producción. La separación puede estar vacía o ser cero.';error.style.display='block';return;
+ }
+ if(!hayDmax&&!hayManual){
+   error.textContent='Indica el Ø máximo o las etiquetas por rollo para calcular.';error.style.display='block';return;
+ }
+ let maxFisico=null, etiquetas, rollos;
+ if(hayDmax){
+   if(!Number.isFinite(Dmax)||Dmax<=Di){error.textContent='El diámetro máximo debe ser mayor que el mandril.';error.style.display='block';return;}
+   maxFisico=Math.floor(Math.PI*(Dmax**2-Di**2)/(4*(Av+S)*e));
+   if(!Number.isSafeInteger(maxFisico)||maxFisico<1){error.textContent='Con estos parámetros no cabe ninguna etiqueta dentro del Ø máximo.';error.style.display='block';return;}
+   etiquetas=mayorDivisor(total,Math.min(total,maxFisico));
+   rollos=total/etiquetas;
+ }else{
+   if(!Number.isSafeInteger(nManual)||nManual<1){
+     error.textContent='Las etiquetas por rollo deben ser un número entero positivo.';error.style.display='block';return;
+   }
+   etiquetas=Math.min(nManual,total);
+   rollos=Math.ceil(total/etiquetas);
+ }
+ const Df=Math.sqrt(Di**2+(4*etiquetas*(Av+S)*e/Math.PI));
+ const metros=(Av+S)*etiquetas/1000;
+ document.getElementById('rEtiquetas').textContent=fmt0(etiquetas);
+ document.getElementById('rRollos').textContent=fmt0(rollos);
+ document.getElementById('rDiametro').textContent=fmt(Df)+' mm';
+ document.getElementById('rMetros').textContent=fmt(metros)+' m';
+ document.getElementById('tituloMax').textContent=hayDmax?'MÁX. ETIQUETAS POR Ø':'ETIQUETAS ÚLTIMO ROLLO';
+ document.getElementById('rMax').textContent=hayDmax?fmt0(maxFisico):fmt0(total-(rollos-1)*etiquetas);
+ document.getElementById('rProducidas').textContent=fmt0(total);
+ document.getElementById('rCaja').textContent='—';document.getElementById('rCajas').textContent='—';
+ let nota='Selección de etiquetas: mayor divisor de la cantidad total que no supera el diámetro máximo. Embalaje calculado geométricamente, sin compresión forzada.';
+ if(document.getElementById('anchoRollo').value.trim()!==''&&Number.isFinite(Ar)&&Ar>0){
+   const opciones=optimizarCajas(Df,Ar,rollos);
+   const viables=opciones.filter(o=>o.capacidad>0).sort((a,b)=>a.volumenTotal-b.volumenTotal||a.cajas-b.cajas||b.capacidad-a.capacidad);
+   const mejor=viables[0];mostrarComparacion(opciones,mejor);
+   if(mejor){
+     document.getElementById('rCaja').textContent=fmt0(mejor.capacidad);
+     document.getElementById('rCajas').textContent=fmt0(mejor.cajas);
+     const rec=document.getElementById('recomendacion');rec.hidden=false;
+     rec.innerHTML=`<h3>CAJA RECOMENDADA</h3><p class="resaltado">${mejor.L} × ${mejor.A} × ${mejor.H} mm</p><p><b>Disposición:</b> ${mejor.patron.nombre} · ${fmt0(mejor.patron.capa)} rollos/capa × ${fmt0(mejor.capas)} capas</p><p><b>Pedido:</b> ${fmt0(mejor.cajas)} cajas · última caja ${fmt0(mejor.ultimos)} rollos</p><p><b>Posiciones sin ocupar:</b> ${fmt0(mejor.huecos)} (en el conjunto de las cajas) · <b>hueco superior:</b> ${fmt(mejor.huecoSuperior)} mm</p>`;
+     if(mejor.capacidad<=300&&Di<Df){
+       embalajeParaVista={L:mejor.L,A:mejor.A,H:mejor.H,D:Df,Ar,Di,patron:mejor.patron.nombre,capa:mejor.patron.capa,nz:mejor.capas,total:mejor.capacidad};
+       document.getElementById('abrirVista').style.display='block';
+     }else if(mejor.capacidad>300){nota+=' El visor 3D actual admite hasta 300 rollos.';}
+   }else{nota+=' Ninguna de las cuatro cajas admite el rollo con estas dimensiones.';}
+ }else{nota+=' Introduce el ancho del rollo para obtener la recomendación de caja.';}
+ document.getElementById('nota').textContent='';
 }
-
-window.addEventListener("error", () => {
-  const error = document.getElementById("error");
-  error.textContent = "Error de aplicación. Recarga la página y vuelve a intentarlo.";
-  error.style.display = "block";
-});
-
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("service-worker.js").catch(()=>{});
-}
+window.addEventListener('error',()=>{const e=document.getElementById('error');e.textContent='Error de aplicación. Recarga la página y vuelve a intentarlo.';e.style.display='block';});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js').catch(()=>{});
 </script>
-</body>
-</html>
+</body></html>
