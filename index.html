@@ -205,22 +205,12 @@ function fmt(x,dec=2){return Number(x).toLocaleString('es-ES',{minimumFractionDi
 function fmt0(x){return Math.round(x).toLocaleString('es-ES');}
 function mayorDivisor(total,maximo){let mejor=1;for(let i=1;i*i<=total;i++){if(total%i===0){const d1=i,d2=total/i;if(d1<=maximo&&d1>mejor)mejor=d1;if(d2<=maximo&&d2>mejor)mejor=d2;}}return mejor;}
 function cabenEnFila(largo,diametro,desplazamiento){return Math.max(0,Math.floor((largo-diametro-desplazamiento)/diametro+1e-10)+1);}
+// Distribución exclusiva en cuadrícula, sin filas ni columnas escalonadas.
+// Los rollos conservan la misma orientación en todas las capas.
 function evaluarPatrones(L,A,D){
- const cuadX=Math.floor((L+1e-9)/D),cuadY=Math.floor((A+1e-9)/D);
- const alternativas=[{nombre:'Cuadrícula',capa:cuadX*cuadY,nx:cuadX,ny:cuadY,cuadricula:true}];
- // Filas paralelas al largo L, desplazamiento de medio diámetro en filas alternas.
- const paso=D*Math.sqrt(3)/2;
- if(L>=D&&A>=D){
-   const filas=Math.floor((A-D+1e-9)/paso)+1;
-   const llenas=Math.ceil(filas/2),cortas=Math.floor(filas/2);
-   const completas=cabenEnFila(L,D,0),alternas=cabenEnFila(L,D,D/2);
-   alternativas.push({nombre:'Escalonado por filas',capa:llenas*completas+cortas*alternas,cuadricula:false});
-   const columnas=Math.floor((L-D+1e-9)/paso)+1;
-   const larg=Math.ceil(columnas/2),cort=Math.floor(columnas/2);
-   const completasY=cabenEnFila(A,D,0),alternasY=cabenEnFila(A,D,D/2);
-   alternativas.push({nombre:'Escalonado por columnas',capa:larg*completasY+cort*alternasY,cuadricula:false});
- }
- return alternativas.sort((a,b)=>b.capa-a.capa||(a.cuadricula?-1:1))[0];
+ const nx=Math.floor((L+1e-9)/D);
+ const ny=Math.floor((A+1e-9)/D);
+ return {nombre:'Cuadrícula',capa:nx*ny,nx,ny,cuadricula:true};
 }
 function optimizarCajas(D,Ar,rollos){
  return CAJAS.map(caja=>{
