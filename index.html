@@ -65,33 +65,34 @@ const CAJAS = Object.freeze([
  {nombre:'Grande corte 200',L:400,A:300,H:200}
 ]);
 let embalajeParaVista=null,botonAnterior=null;
+// La animación original está en el archivo visor-3d.html del mismo repositorio.
+// Se recarga el visor al abrir para restaurar sus controles y su secuencia de cierre.
+let vistaCarga=0;
 function abrirVista(){
  if(!embalajeParaVista)return;
  botonAnterior=document.activeElement;
  document.getElementById('overlayVista').classList.add('abierto');
  document.body.classList.add('vista-abierta');
  document.getElementById('cerrarVista').focus();
- const d=embalajeParaVista,original=d.patron==='Cuadrícula';
  const frame=document.getElementById('visorOriginal');
- document.getElementById('lienzoAlternativo').style.display=original?'none':'block';
- frame.style.display=original?'block':'none';
- if(original){
-   if(!frame.src.includes('visor-3d.html'))frame.src='https://pive110.github.io/calculadora-rollos/visor-3d.html';
-   enviarVistaOriginal();
- }else requestAnimationFrame(dibujarVista);
+ document.getElementById('lienzoAlternativo').style.display='none';
+ frame.style.display='block';
+ // Usar siempre el visor animado original, nunca el lienzo esquemático.
+ vistaCarga++;
+ frame.src='./visor-3d.html?vista='+vistaCarga;
 }
 function cerrarVista(){
  document.getElementById('overlayVista').classList.remove('abierto');
  document.body.classList.remove('vista-abierta');
  const frame=document.getElementById('visorOriginal');
- if(frame.contentWindow)frame.contentWindow.postMessage({tipo:'LABEL_ROLL_STOP'},'https://pive110.github.io');
+ if(frame.contentWindow)frame.contentWindow.postMessage({tipo:'LABEL_ROLL_STOP'},location.origin);
  if(botonAnterior&&botonAnterior.focus)botonAnterior.focus();
 }
 function enviarVistaOriginal(){
  const d=embalajeParaVista,frame=document.getElementById('visorOriginal');
- if(!d||d.patron!=='Cuadrícula'||!frame.contentWindow)return;
+ if(!d||!frame.contentWindow)return;
  const nx=Math.floor((d.L+1e-9)/d.D),ny=Math.floor((d.A+1e-9)/d.D);
- frame.contentWindow.postMessage({tipo:'LABEL_ROLL_VISTA',datos:{L:d.L,A:d.A,H:d.H,D:d.D,Ar:d.Ar,Di:d.Di,nx,ny,nz:d.nz,total:nx*ny*d.nz}},'https://pive110.github.io');
+ frame.contentWindow.postMessage({tipo:'LABEL_ROLL_VISTA',datos:{L:d.L,A:d.A,H:d.H,D:d.D,Ar:d.Ar,Di:d.Di,nx,ny,nz:d.nz,total:nx*ny*d.nz}},location.origin);
 }
 document.getElementById('visorOriginal').addEventListener('load',enviarVistaOriginal);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('overlayVista').classList.contains('abierto'))cerrarVista();});
