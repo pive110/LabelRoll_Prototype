@@ -20,8 +20,7 @@
     const pt=p=>`${(p[0]+offx).toFixed(1)},${(p[1]+offy).toFixed(1)}`;
     const poly=(...names)=>names.map(n=>pt(ps[n])).join(' ');
     const color=t.kraft?['#d7b28d','#b99067','#cba67e']:['#e0e4e9','#a2abb5','#c4ccd5'];
-    return `<svg class="lrc-caja-svg" viewBox="0 0 320 206" role="img" aria-label="Caja ${t.n}, representación isométrica proporcional"><g stroke="${t.kraft?'#917353':'#79838d'}" stroke-width="1.05" stroke-linejoin="round"><polygon points="${poly('E','F','B','A')}" fill="${color[1]}"/><polygon points="${poly('F','G','C','B')}" fill="${color[2]}"/><polygon points="${poly('A','B','C','D')}" fill="${color[0]}"/></g></svg>`;
-  }
+ return `<svg class="lrc-caja-svg" viewBox="0 0 320 206" role="img" aria-label="Caja ${t.n}, representación isométrica proporcional"><g stroke="${t.kraft?'#917353':'#79838d'}" stroke-width="1.05" stroke-linejoin="round"><polygon points="${poly('D','C','G','H')}" fill="${color[1]}"/><polygon points="${poly('B','C','G','F')}" fill="${color[2]}"/><polygon points="${poly('A','B','C','D')}" fill="${color[0]}"/></g></svg>`;
   function card(t,i,sel){
     const selected=i===sel;
     return `<article class="lrc-caja-card${selected?' lrc-seleccionada':''}" aria-label="${t.n}${t.c?' con '+t.c+' corte'+(t.c>1?'s':''):''}${selected?', caja recomendada':''}"><div class="lrc-caja-nombre">${t.n}</div><div class="lrc-caja-figura">${cajaSvg(t)}</div>${t.c?`<div class="lrc-cortes" aria-label="${t.c} corte${t.c>1?'s':''}">${Array.from({length:t.c},iconoCutter).join('')}</div>`:''}${selected?'<span class="lrc-elegida">✓ RECOMENDADA</span>':''}</article>`;
