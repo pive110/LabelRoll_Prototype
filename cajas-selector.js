@@ -15,7 +15,7 @@ function mostrarSelectorCajas(opciones,recomendada,seleccionar){
  });
  function activar(o,b){
   lista.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
-  panel.querySelector('.caja-detalle').innerHTML=`<p><b>${o===recomendada?'Caja recomendada':'Caja seleccionada'}:</b> ${o.L} × ${o.A} × ${o.H} mm</p><p>${fmt0(o.patron.capa)} rollos/capa × ${fmt0(o.capas)} capas · ${fmt0(o.capacidad)} rollos/caja</p><p><b>Pedido:</b> ${fmt0(o.cajas)} cajas · última caja: ${fmt0(o.ultimos)} rollos</p><p>Posiciones sin ocupar: ${fmt0(o.huecos)} · hueco superior: ${fmt(o.huecoSuperior)} mm</p>${o.capacidad>300?'<p>El visor 3D admite hasta 300 rollos por caja.</p>':''}`;
+  panel.querySelector('.caja-detalle').innerHTML=`<p><b>Pedido:</b> ${fmt0(o.cajas)} cajas · <b>Última caja:</b> ${fmt0(o.ultimos)} rollos</p>`;
   seleccionar(o);
  }
  if(recomendada)activar(recomendada,lista.children[opciones.indexOf(recomendada)]);
