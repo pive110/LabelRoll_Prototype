@@ -21,6 +21,7 @@
 .espesor-rapido .espesor-cuerpo{padding-top:14px;border-top:none}
 @media(max-width:370px){.boton-mini-espesor{font-size:11px;padding:5px 6px}}
 </style>
+<link rel="stylesheet" href="cajas-selector.css?v=1">
 </head>
 <body>
 <div class="calculadora">
@@ -274,16 +275,17 @@ function calcular(){
    const opciones=optimizarCajas(Df,Ar,rollos);
    const viables=opciones.filter(o=>o.capacidad>0).sort((a,b)=>a.volumenTotal-b.volumenTotal||a.cajas-b.cajas||b.capacidad-a.capacidad);
    const mejor=viables[0];mostrarComparacion(opciones,mejor);
-   if(mejor){
-     document.getElementById('rCaja').textContent=fmt0(mejor.capacidad);
-     document.getElementById('rCajas').textContent=fmt0(mejor.cajas);
-     const rec=document.getElementById('recomendacion');rec.hidden=false;
-     rec.innerHTML=`<h3>CAJA RECOMENDADA</h3><p class="resaltado">${mejor.L} × ${mejor.A} × ${mejor.H} mm</p><p><b>Disposición:</b> ${mejor.patron.nombre} · ${fmt0(mejor.patron.capa)} rollos/capa × ${fmt0(mejor.capas)} capas</p><p><b>Pedido:</b> ${fmt0(mejor.cajas)} cajas · última caja ${fmt0(mejor.ultimos)} rollos</p><p><b>Posiciones sin ocupar:</b> ${fmt0(mejor.huecos)} (en el conjunto de las cajas) · <b>hueco superior:</b> ${fmt(mejor.huecoSuperior)} mm</p>`;
-     if(mejor.capacidad<=300&&Di<Df){
-       embalajeParaVista={L:mejor.L,A:mejor.A,H:mejor.H,D:Df,Ar,Di,patron:mejor.patron.nombre,capa:mejor.patron.capa,nz:mejor.capas,total:mejor.capacidad};
+   mostrarSelectorCajas(opciones,mejor,seleccion=>{
+     document.getElementById('rCaja').textContent=fmt0(seleccion.capacidad);
+     document.getElementById('rCajas').textContent=fmt0(seleccion.cajas);
+     mostrarComparacion(opciones,seleccion);
+     embalajeParaVista=null;
+     document.getElementById('abrirVista').style.display='none';
+     if(seleccion.capacidad<=300&&Di<Df){
+       embalajeParaVista={L:seleccion.L,A:seleccion.A,H:seleccion.H,D:Df,Ar,Di,patron:seleccion.patron.nombre,capa:seleccion.patron.capa,nz:seleccion.capas,total:seleccion.capacidad};
        document.getElementById('abrirVista').style.display='block';
-     }else if(mejor.capacidad>300){nota+=' El visor 3D actual admite hasta 300 rollos.';}
-   }else{nota+=' Ninguna de las cuatro cajas admite el rollo con estas dimensiones.';}
+     }
+   });
  }else{nota+=' Introduce el ancho del rollo para obtener la recomendación de caja.';}
  document.getElementById('nota').textContent='';
 }
@@ -291,6 +293,6 @@ window.addEventListener('error',()=>{const e=document.getElementById('error');e.
 if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js').catch(()=>{});
 </script>
 <script src="interfaz-v2.js" defer></script>
-<script src="cajas-visuales.js?v=2" defer></script>
+<script src="cajas-selector.js?v=1" defer></script>
 </body>
 </html>
