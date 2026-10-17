@@ -21,6 +21,7 @@
 .espesor-rapido .espesor-cuerpo{padding-top:14px;border-top:none}
 @media(max-width:370px){.boton-mini-espesor{font-size:11px;padding:5px 6px}}
 </style>
+<link rel="stylesheet" href="cajas-selector.css?v=7">
 </head>
 <body>
 <div class="calculadora">
@@ -28,18 +29,18 @@
 <div class="seccion">Datos del pedido y material</div>
 <div class="grid">
 <div class="campo"><label for="total">Cantidad total</label><input id="total" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 300000"><div class="unidad">etiquetas</div></div>
-<div class="campo"><label for="avance">Avance</label><input id="avance" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 100"><div class="unidad">mm / etiqueta</div></div>
-<div class="campo"><label for="mandril">Ø mandril</label><input id="mandril" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 84"><div class="unidad">mm</div></div>
-<div class="campo"><label for="separacion">Separación</label><input id="separacion" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="0 (si está vacío)"><div class="unidad">mm · si se deja vacío, se considera 0</div></div>
-<div class="campo"><div class="campo-label-accion"><label for="espesor">Espesor</label><button type="button" class="boton-mini-espesor" id="toggleEspesor" aria-controls="espesorRapido" aria-expanded="false" onclick="alternarEspesorRapido()" title="Abrir calculadora rápida de espesor">↗ Calcular espesor</button></div><input id="espesor" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.00001" inputmode="decimal" placeholder="Ej. 0.11521"><div class="unidad">mm</div></div>
-<details class="espesor-rapido" id="espesorRapido"><summary>Calculadora rápida de espesor</summary><div class="espesor-cuerpo"><p>Mide el diámetro exterior de un rollo ya fabricado. Se utilizarán automáticamente el avance, la separación y el mandril introducidos arriba.</p><div class="grid"><div class="campo"><label for="muestraDiametro">Ø exterior medido</label><input id="muestraDiametro" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 148,18"><div class="unidad">mm</div></div><div class="campo"><label for="muestraEtiquetas">Etiquetas del rollo de muestra</label><input id="muestraEtiquetas" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><div class="unidad">etiquetas · cantidad real del rollo medido</div></div></div><button class="rapido-btn" type="button" onclick="calcularEspesorRapido()">CALCULAR ESPESOR</button><div id="espesorError" class="espesor-error" role="alert"></div><div id="espesorResultado" class="espesor-resultado" aria-live="polite"><div>Espesor estimado del conjunto</div><strong id="espesorValor">—</strong><div id="espesorMicras" class="hint-rapido"></div><button type="button" onclick="usarEspesorRapido()">UTILIZAR ESTE ESPESOR EN EL PEDIDO ↑</button></div><p>Modelo geométrico: e = π × (Df² − Di²) / [4 × N × (avance + separación)]. Es un espesor efectivo aproximado del material enrollado (soporte + adhesivo + frontal), no solo del papel. Para más precisión, mide varios rollos sin comprimirlos.</p></div></details>
-<div class="campo"><label for="diamMax">Ø máximo (opcional)</label><input id="diamMax" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Dejar vacío si no se indica"><div class="unidad">mm · con Ø máximo, cálculo automático</div></div>
+<div class="campo"><label for="avance">Avance</label><input id="avance" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 100"><div class="unidad">mm / etiqueta</div></div>
+<div class="campo"><label for="mandril">Ø mandril</label><input id="mandril" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 84"><div class="unidad">mm</div></div>
+<div class="campo"><label for="separacion">Separación</label><input id="separacion" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="0 (si está vacío)"><div class="unidad">mm · si se deja vacío, se considera 0</div></div>
+<div class="campo"><div class="campo-label-accion"><label for="espesor">Espesor</label><button type="button" class="boton-mini-espesor" id="toggleEspesor" aria-controls="espesorRapido" aria-expanded="false" onclick="alternarEspesorRapido()" title="Abrir calculadora rápida de espesor">↗ Calcular espesor</button></div><input id="espesor" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 0,11521"><div class="unidad">mm</div></div>
+<details class="espesor-rapido" id="espesorRapido"><summary>Calculadora rápida de espesor</summary><div class="espesor-cuerpo"><p>Mide el diámetro exterior de un rollo ya fabricado. Se utilizarán automáticamente el avance, la separación y el mandril introducidos arriba.</p><div class="grid"><div class="campo"><label for="muestraDiametro">Ø exterior medido</label><input id="muestraDiametro" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 148,18"><div class="unidad">mm</div></div><div class="campo"><label for="muestraEtiquetas">Etiquetas del rollo de muestra</label><input id="muestraEtiquetas" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><div class="unidad">etiquetas · cantidad real del rollo medido</div></div></div><button class="rapido-btn" type="button" onclick="calcularEspesorRapido()">CALCULAR ESPESOR</button><div id="espesorError" class="espesor-error" role="alert"></div><div id="espesorResultado" class="espesor-resultado" aria-live="polite"><div>Espesor estimado del conjunto</div><strong id="espesorValor">—</strong><div id="espesorMicras" class="hint-rapido"></div><button type="button" onclick="usarEspesorRapido()">UTILIZAR ESTE ESPESOR EN EL PEDIDO ↑</button></div><p>Modelo geométrico: e = π × (Df² − Di²) / [4 × N × (avance + separación)]. Es un espesor efectivo aproximado del material enrollado (soporte + adhesivo + frontal), no solo del papel. Para más precisión, mide varios rollos sin comprimirlos.</p></div></details>
+<div class="campo"><label for="diamMax">Ø máximo (opcional)</label><input id="diamMax" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Dejar vacío si no se indica"><div class="unidad">mm · con Ø máximo, cálculo automático</div></div>
 <div class="campo"><label for="etiquetasManual">Etiquetas por rollo (opcional)</label><input id="etiquetasManual" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><div class="unidad">Sin Ø máximo, indica este valor</div></div>
-<div class="campo"><label for="anchoRollo">Ancho del rollo</label><input id="anchoRollo" type="number" autocomplete="off" enterkeyhint="done" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 45"><div class="unidad">mm (medida axial del rollo)</div></div>
+<div class="campo"><label for="anchoRollo">Ancho del rollo</label><input id="anchoRollo" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 45"><div class="unidad">mm (medida axial del rollo)</div></div>
 </div>
 <div class="seccion">Embalaje automático</div>
 
-<button type="button" onclick="calcular()">CALCULAR</button><div id="error" class="error" role="alert"></div>
+<button id="calcularEmbalaje" type="button" onclick="calcular()">CALCULAR</button><div id="error" class="error" role="alert"></div>
 <div class="resultado"><h2>RESULTADOS</h2>
 <div class="result-grid">
 <div class="card principal"><div class="titulo">ETIQUETAS / ROLLO</div><div id="rEtiquetas" class="numero">—</div></div>
@@ -49,7 +50,7 @@
 <div class="card"><div class="titulo" id="tituloMax">MÁX. ETIQUETAS POR Ø</div><div id="rMax" class="numero">—</div></div>
 <div class="card"><div class="titulo">ROLLOS / CAJA</div><div id="rCaja" class="numero">—</div></div>
 <div class="card"><div class="titulo">Nº DE CAJAS</div><div id="rCajas" class="numero">—</div></div>
-<div class="card"><div class="titulo">ETIQUETAS PRODUCIDAS</div><div id="rProducidas" class="numero">—</div></div>
+<div class="card"><div class="titulo">ETIQUETAS PRODUCIDAS</div><div id="rProducidas" class="numero">—</div><div id="pedidoVerificado" class="pedido-verificado" role="status" aria-label="Cantidad del pedido verificada" hidden><span class="pedido-check" aria-hidden="true">✓</span></div></div>
 </div>
 <div id="recomendacion" class="recomendada" hidden></div>
 <div id="comparacion" class="comparacion" hidden></div>
@@ -59,10 +60,10 @@
 <script>
 'use strict';
 const CAJAS = Object.freeze([
- {nombre:'Pequeña',L:300,A:300,H:210},
- {nombre:'Grande completa',L:400,A:300,H:300},
- {nombre:'Grande corte 250',L:400,A:300,H:250},
- {nombre:'Grande corte 200',L:400,A:300,H:200}
+ {nombre:'CampoFr',L:300,A:300,H:210},
+ {nombre:'N1',L:400,A:300,H:300},
+ {nombre:'N1 · 1 corte',L:400,A:300,H:250},
+ {nombre:'N1 · 2 cortes',L:400,A:300,H:200}
 ]);
 let embalajeParaVista=null,botonAnterior=null;
 // La animación original está en el archivo visor-3d.html del mismo repositorio.
@@ -195,13 +196,13 @@ function calcularEspesorRapido(){
 }
 function usarEspesorRapido(){
  if(!(espesorRapidoCalculado>0))return;
- const campo=document.getElementById('espesor');campo.value=Number(espesorRapidoCalculado.toFixed(8)).toString();
+ const campo=document.getElementById('espesor');campo.value=Number(espesorRapidoCalculado.toFixed(8)).toString().replace('.', ',');
  document.getElementById('espesorRapido').open=false;
  campo.focus();
  document.getElementById('nota').textContent='';
  document.getElementById('recomendacion').hidden=true;document.getElementById('comparacion').hidden=true;document.getElementById('abrirVista').style.display='none';embalajeParaVista=null;
 }
-function n(id){return Number(document.getElementById(id).value);}
+function n(id){return Number(document.getElementById(id).value.trim().replace(',', '.'));}
 function fmt(x,dec=2){return Number(x).toLocaleString('es-ES',{minimumFractionDigits:dec,maximumFractionDigits:dec});}
 function fmt0(x){return Math.round(x).toLocaleString('es-ES');}
 function mayorDivisor(total,maximo){let mejor=1;for(let i=1;i*i<=total;i++){if(total%i===0){const d1=i,d2=total/i;if(d1<=maximo&&d1>mejor)mejor=d1;if(d2<=maximo&&d2>mejor)mejor=d2;}}return mejor;}
@@ -227,11 +228,12 @@ function mostrarComparacion(opciones,mejor){
  const tabla=document.getElementById('comparacion');tabla.hidden=false;
  const filas=opciones.map(o=>{
   const marca=o===mejor?' <span class="tag">★</span>':'';
-  return `<tr class="${o===mejor?'ganadora':''}"><td>${o.L}×${o.A}×${o.H}${marca}</td><td>${o.capacidad?fmt0(o.capacidad):'No cabe'}</td><td>${o.capacidad?fmt0(o.cajas):'—'}</td><td>${o.capacidad?o.patron.nombre:'—'}</td></tr>`;
+  return `<tr class="${o===mejor?'ganadora':''}"><td>${o.nombre}${marca}</td><td>${o.capacidad?fmt0(o.capacidad):'No cabe'}</td><td>${o.capacidad?fmt0(o.cajas):'—'}</td><td>${o.capacidad?o.patron.nombre:'—'}</td></tr>`;
  }).join('');
- tabla.innerHTML=`<table><thead><tr><th>Caja (mm)</th><th>Rollos/caja</th><th>Cajas</th><th>Disposición</th></tr></thead><tbody>${filas}</tbody></table>`;
+ tabla.innerHTML=`<table><thead><tr><th>Caja</th><th>Rollos/caja</th><th>Cajas</th><th>Disposición</th></tr></thead><tbody>${filas}</tbody></table>`;
 }
 function calcular(){
+ document.getElementById('pedidoVerificado').hidden=true;
  const error=document.getElementById('error');error.style.display='none';
  embalajeParaVista=null;document.getElementById('abrirVista').style.display='none';document.getElementById('recomendacion').hidden=true;document.getElementById('comparacion').hidden=true;
  const total=n('total'),Av=n('avance'),S=n('separacion'),e=n('espesor'),Di=n('mandril'),Dmax=n('diamMax'),Ar=n('anchoRollo');
@@ -267,30 +269,34 @@ function calcular(){
  document.getElementById('rMetros').textContent=fmt(metros)+' m';
  document.getElementById('tituloMax').textContent=hayDmax?'MÁX. ETIQUETAS POR Ø':'ETIQUETAS ÚLTIMO ROLLO';
  document.getElementById('rMax').textContent=hayDmax?fmt0(maxFisico):fmt0(total-(rollos-1)*etiquetas);
- document.getElementById('rProducidas').textContent=fmt0(total);
+ const ultimoRollo=total-(rollos-1)*etiquetas;
+ const producidas=(rollos-1)*etiquetas+ultimoRollo;
+ document.getElementById('rProducidas').textContent=fmt0(producidas);
+ document.getElementById('pedidoVerificado').hidden=producidas!==total;
  document.getElementById('rCaja').textContent='—';document.getElementById('rCajas').textContent='—';
  let nota='Selección de etiquetas: mayor divisor de la cantidad total que no supera el diámetro máximo. Embalaje calculado geométricamente, sin compresión forzada.';
  if(document.getElementById('anchoRollo').value.trim()!==''&&Number.isFinite(Ar)&&Ar>0){
    const opciones=optimizarCajas(Df,Ar,rollos);
    const viables=opciones.filter(o=>o.capacidad>0).sort((a,b)=>a.volumenTotal-b.volumenTotal||a.cajas-b.cajas||b.capacidad-a.capacidad);
    const mejor=viables[0];mostrarComparacion(opciones,mejor);
-   if(mejor){
-     document.getElementById('rCaja').textContent=fmt0(mejor.capacidad);
-     document.getElementById('rCajas').textContent=fmt0(mejor.cajas);
-     const rec=document.getElementById('recomendacion');rec.hidden=false;
-     rec.innerHTML=`<h3>CAJA RECOMENDADA</h3><p class="resaltado">${mejor.L} × ${mejor.A} × ${mejor.H} mm</p><p><b>Disposición:</b> ${mejor.patron.nombre} · ${fmt0(mejor.patron.capa)} rollos/capa × ${fmt0(mejor.capas)} capas</p><p><b>Pedido:</b> ${fmt0(mejor.cajas)} cajas · última caja ${fmt0(mejor.ultimos)} rollos</p><p><b>Posiciones sin ocupar:</b> ${fmt0(mejor.huecos)} (en el conjunto de las cajas) · <b>hueco superior:</b> ${fmt(mejor.huecoSuperior)} mm</p>`;
-     if(mejor.capacidad<=300&&Di<Df){
-       embalajeParaVista={L:mejor.L,A:mejor.A,H:mejor.H,D:Df,Ar,Di,patron:mejor.patron.nombre,capa:mejor.patron.capa,nz:mejor.capas,total:mejor.capacidad};
+   mostrarSelectorCajas(opciones,mejor,seleccion=>{
+     document.getElementById('rCaja').textContent=fmt0(seleccion.capacidad);
+     document.getElementById('rCajas').textContent=fmt0(seleccion.cajas);
+     mostrarComparacion(opciones,seleccion);
+     embalajeParaVista=null;
+     document.getElementById('abrirVista').style.display='none';
+     if(seleccion.capacidad<=300&&Di<Df){
+       embalajeParaVista={L:seleccion.L,A:seleccion.A,H:seleccion.H,D:Df,Ar,Di,patron:seleccion.patron.nombre,capa:seleccion.patron.capa,nz:seleccion.capas,total:seleccion.capacidad};
        document.getElementById('abrirVista').style.display='block';
-     }else if(mejor.capacidad>300){nota+=' El visor 3D actual admite hasta 300 rollos.';}
-   }else{nota+=' Ninguna de las cuatro cajas admite el rollo con estas dimensiones.';}
+     }
+   });
  }else{nota+=' Introduce el ancho del rollo para obtener la recomendación de caja.';}
  document.getElementById('nota').textContent='';
 }
 window.addEventListener('error',()=>{const e=document.getElementById('error');e.textContent='Error de aplicación. Recarga la página y vuelve a intentarlo.';e.style.display='block';});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js').catch(()=>{});
 </script>
-<script src="interfaz-v2.js" defer></script>
-<script src="cajas-visuales.js?v=2" defer></script>
+<script src="interfaz-v2.js?v=4" defer></script>
+<script src="cajas-selector.js?v=2" defer></script>
 </body>
 </html>

@@ -67,6 +67,27 @@
       field.classList.toggle('campo-ancho-completo',wide);
       base.appendChild(field);
     }
+    // Seguir el orden visible, incluidos los campos de espesor si están abiertos.
+    base.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || event.target.tagName !== 'INPUT') return;
+      const visibles = Array.from(base.querySelectorAll('input')).filter(input => !input.disabled && input.type !== 'hidden' && input.getClientRects().length > 0);
+      const indice = visibles.indexOf(event.target);
+      if (indice < 0) return;
+      event.preventDefault();
+      const siguiente = visibles[indice + 1] || $('calcularEmbalaje');
+      if (siguiente) siguiente.focus();
+    });
+    $('espesor').addEventListener('wheel', event => {
+      if (document.activeElement === $('espesor')) event.preventDefault();
+    }, { passive: false });
+    base.addEventListener('input', () => {
+      $('pedidoVerificado').hidden = true;
+    });
+    base.querySelectorAll('input[inputmode="decimal"]').forEach(input => {
+      input.addEventListener('input', () => {
+        if (input.value.includes('.')) input.value = input.value.replaceAll('.', ',');
+      });
+    });
     const espesorRapido = $('espesorRapido');
     if (espesorRapido) base.appendChild(espesorRapido);
 

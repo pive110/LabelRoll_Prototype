@@ -1,6 +1,6 @@
 /* Label Roll Calculator - actualizacion del visor 3D 2026-10-10 */
-const CACHE_NAME = 'label-roll-calculator-v3-vista3d';
-const APP_SHELL = ['./', './index.html', './visor-3d.html', './manifest.json'];
+const CACHE_NAME = 'label-roll-calculator-v10-escritorio';
+const APP_SHELL = ['./', './index.html', './visor-3d.html', './manifest.json', './interfaz-v2.js?v=4', './cajas-selector.js?v=2', './cajas-selector.css?v=7'];
 
 self.addEventListener('install', event => {
   self.skipWaiting();
