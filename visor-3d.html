@@ -3,284 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Label Roll 3D · Laboratorio v0.8</title>
-<style>
-:root{color-scheme:dark;--bg:#0b0b0d;--panel:#171719;--line:#353539;--red:#e30613;--muted:#a6a6ad}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f5f6;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}
-main{max-width:980px;margin:auto;padding:16px}header{padding:16px 2px 20px;border-bottom:1px solid var(--line);margin-bottom:16px}
-h1{font-size:clamp(21px,4.5vw,27px);letter-spacing:.05em;margin:0}h1 b{color:var(--red)}header p{margin:6px 0 0;color:var(--muted);font-size:13px}
-section{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:14px}
-.heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}h2{font-size:16px;margin:0}.tag{font-size:11px;padding:6px 9px;border-radius:6px;background:#2d2d31;color:#bbb}
-#scene{display:block;background:#101014;width:100%;height:auto;border-radius:10px;max-height:68vh;aspect-ratio:900/850}
-.controls{display:flex;justify-content:center;gap:15px;margin-top:14px}.control{border:0;border-radius:11px;width:60px;height:56px;color:white;display:grid;place-items:center;cursor:pointer;touch-action:manipulation}.control svg{width:25px;height:25px;fill:currentColor}.control.play{background:var(--red)}.control.reset{background:#333337}.control:focus-visible{outline:2px solid white;outline-offset:3px}
-.progress{height:5px;margin-top:15px;background:#333337;border-radius:30px;overflow:hidden}.progress>div{height:100%;width:0%;background:var(--red)}.status{color:#aaa;text-align:center;font-size:13px;margin:12px 0 0;min-height:18px}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:#262629;border-radius:10px;padding:13px}.stat small{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.stat strong{font-size:16px;font-variant-numeric:tabular-nums}.legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:15px}.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#ddd}.swatch{width:16px;height:16px;border-radius:4px;flex-shrink:0;border:1px solid #fff5}
-#scene text{font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;paint-order:stroke;stroke:#101014;stroke-width:4px;stroke-linejoin:round}
-label{display:block;font-size:12px;color:#bdbdc3;margin-bottom:5px}.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.field input{background:#28282c;border:1px solid #505056;border-radius:8px;color:#fff;min-height:43px;width:100%;padding:10px;font:inherit;font-size:16px}.field input:focus{outline:2px solid #e30613;outline-offset:1px}.apply{background:#e30613;border:0;color:white;font-weight:700;border-radius:9px;min-height:46px;padding:0 22px;cursor:pointer;margin-top:14px}.error{font-size:13px;color:#ff9b9b;min-height:1.1em;margin-top:9px}.note{color:var(--muted);font-size:12px;line-height:1.6;margin:14px 0 0}@media(max-width:450px){main{padding:10px}section{padding:12px}.stat strong{font-size:14px}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(prefers-reduced-motion:reduce){.progress>div{transition:none}}
-
-/* Modo visor: sin formularios ni cálculo independiente */
-body{overflow-x:hidden}
-main{max-width:850px;padding:10px}
-header{display:none}
-section{margin-bottom:10px}
-section.editor{display:none}
-#scene{max-height:60dvh}
-.note{display:none}
-</style>
+<title>Label Roll · Vista de embalaje</title>
+<link rel="stylesheet" href="visor.css?v=2.0.0">
 </head>
 <body>
 <main>
-<header><h1>LABEL ROLL <b>3D</b></h1><p>Laboratorio independiente · Simulación de embalaje y cierre</p></header>
 <section>
-  <div class="heading"><h2>Vista isométrica</h2><span class="tag">VISTA V0.8</span></div>
+  <div class="heading"><h2>Vista isométrica</h2><span class="tag" id="viewKind">CAPACIDAD MÁXIMA</span></div>
   <svg id="scene" viewBox="0 0 900 850" role="img" aria-label="Simulación isométrica de embalaje con cilindros verticales"></svg>
   <div class="controls">
     <button id="play" class="control play" type="button" aria-label="Reproducir animación" title="Reproducir / pausar"><svg id="playIcon" viewBox="0 0 24 24"><path d="M7 4 20 12 7 20Z"/></svg></button>
     <button id="reset" class="control reset" type="button" aria-label="Reiniciar animación" title="Reiniciar"><svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1-7.75 10h2.1A6 6 0 1 0 12 6c-1.66 0-3.17.67-4.24 1.76L11 11H3V3l3.34 3.34A7.95 7.95 0 0 1 12 4Z"/></svg></button>
   </div>
+  <div class="controls-extra"><button id="finish" type="button">Ver resultado final</button><label for="speed">Velocidad</label><select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></div>
   <div class="progress" aria-hidden="true"><div id="progressFill"></div></div>
   <p class="status" id="status" aria-live="polite">Pulsa ▶ para iniciar la animación</p>
-</section>
-<section class="editor">
-  <div class="heading"><h2>Medidas editables</h2><span class="tag">MILÍMETROS</span></div>
-  <div class="fields">
-    <div class="field"><label for="L">Largo de caja</label><input id="L" inputmode="decimal" value="400" aria-label="Largo interior de caja en mm"></div>
-    <div class="field"><label for="W">Ancho de caja</label><input id="W" inputmode="decimal" value="300" aria-label="Ancho interior de caja en mm"></div>
-    <div class="field"><label for="H">Alto de caja</label><input id="H" inputmode="decimal" value="300" aria-label="Alto interior de caja en mm"></div>
-    <div class="field"><label for="D">Diámetro exterior</label><input id="D" inputmode="decimal" value="179,666062" aria-label="Diámetro exterior del rollo en mm"></div>
-    <div class="field"><label for="width">Ancho de rollo</label><input id="width" inputmode="decimal" value="45" aria-label="Ancho axial del rollo en mm"></div>
-    <div class="field"><label for="core">Diámetro mandril</label><input id="core" inputmode="decimal" value="84" aria-label="Diámetro interior del mandril en mm"></div>
-  </div>
-  <button class="apply" id="apply" type="button">CALCULAR DISTRIBUCIÓN</button>
-  <div class="error" id="error" role="alert"></div>
 </section>
 <section>
   <div class="heading"><h2>Distribución calculada</h2><span class="tag">EJE VERTICAL</span></div>
   <div class="stats">
-    <div class="stat"><small>Caja (L × A × H)</small><strong id="dims">400 × 300 × 300 mm</strong></div>
-    <div class="stat"><small>Diámetro exterior</small><strong id="diam">179,666062 mm</strong></div>
-    <div class="stat"><small>Ancho de rollo</small><strong id="rollwidth">45 mm</strong></div>
-    <div class="stat"><small>Rollos colocados</small><strong id="count">0 / 12</strong></div>
-    <div class="stat"><small>Diámetro mandril</small><strong id="mandril">84 mm</strong></div>
-    <div class="stat"><small>Distribución</small><strong id="distribution">2 × 1 × 6 capas</strong></div>
-    <div class="stat"><small>Altura usada en cálculo</small><strong id="usableHeight">295 mm</strong></div>
+    <div class="stat"><small>Caja (L × A × H)</small><strong id="dims">—</strong></div>
+    <div class="stat"><small>Diámetro exterior</small><strong id="diam">—</strong></div>
+    <div class="stat"><small>Ancho de rollo</small><strong id="rollwidth">—</strong></div>
+    <div class="stat"><small>Rollos colocados</small><strong id="count">—</strong></div>
+    <div class="stat"><small>Diámetro mandril</small><strong id="mandril">—</strong></div>
+    <div class="stat"><small>Distribución</small><strong id="distribution">—</strong></div>
+    <div class="stat"><small>Altura usada en cálculo</small><strong id="usableHeight">—</strong></div>
     <div class="stat"><small>Criterio de separación</small><strong>Según cálculo original (sin holgura)</strong></div>
   </div>
   <div class="legend" id="legend"></div>
-  <p class="note">Medidas interiores de caja. Se reservan 5 mm libres bajo la tapa; en planta se deja 1 mm entre cilindros contiguos (no entre rollos y paredes). Distribución rectangular con eje vertical. Los colores identifican capas. La vista isométrica no muestra cotas. Al finalizar el llenado, las dos solapas cortas se pliegan a la vez, seguidas de las dos largas y una cinta roja semitransparente. Al terminar la última capa, las paredes pasan gradualmente al color opaco de las solapas antes de cerrarse. El cierre es una representación visual esquemática, no una validación mecánica de las solapas ni de las deformaciones del embalaje. Máximo: 300 rollos por simulación.</p>
+  <p class="vista-nota">Capacidad geométrica sin holgura añadida. Los rollos se representan con el diámetro del rollo completo.</p>
 </section>
 </main>
-<script>
-'use strict';
-const NS='http://www.w3.org/2000/svg';
-const svg=document.getElementById('scene');
-let box={L:400,W:300,H:300};
-let roll={D:179.666062,width:45,core:84};
-const colors=['#E5E7EB','#75B5CD','#E8AA60','#A6A2DB','#80BD9E','#E56D74'];
-const DURATION=620,STAGGER=350,MAX_ROLLS=300;
-// Fases del cierre: pausa, dos solapas cortas, dos largas y precintado.
-const HOLD=900,SHORT_TIME=900,LONG_TIME=1000,TAPE_TIME=850;
-const TAPE_COLOR='#E30613';
-const GAP_XY=1,TOP_CLEARANCE=5;
-let positions=[],counts={nx:0,ny:0,nz:0},TOTAL=0;
-let elapsed=0,previous=null,playing=false,complete=false,raf=null;
-let FILL_END=0,SHORT_START=0,LONG_START=0,TAPE_START=0;
-let transform={scale:1,x:0,y:0};
-const $=id=>document.getElementById(id);
-const fmt=n=>new Intl.NumberFormat('es-ES',{maximumFractionDigits:6}).format(n);
-function projectRaw(x,y,z){return{x:(x-y)*Math.sqrt(3)/2,y:(x+y)*.5-z};}
-function iso(x,y,z){const p=projectRaw(x,y,z);return{x:transform.x+p.x*transform.scale,y:transform.y+p.y*transform.scale};}
-function fitView(){
- const vertices=[];
- for(const x of [0,box.L])for(const y of [0,box.W])for(const z of [0,box.H+Math.max(roll.width,box.H*.18)])vertices.push(projectRaw(x,y,z));
- const xs=vertices.map(p=>p.x),ys=vertices.map(p=>p.y);
- const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
- const sx=660/Math.max(1,maxX-minX),sy=590/Math.max(1,maxY-minY);
- transform.scale=Math.min(sx,sy);
- transform.x=435-(minX+maxX)/2*transform.scale;
- transform.y=375-(minY+maxY)/2*transform.scale;
-}
-function el(tag,attrs={}){const v=document.createElementNS(NS,tag);for(const [k,val] of Object.entries(attrs))v.setAttribute(k,String(val));svg.append(v);return v;}
-function poly(points,fill,stroke='#666',opacity=1){return el('polygon',{points:points.map(p=>`${p.x},${p.y}`).join(' '),fill,stroke,opacity,'stroke-width':1.5,'stroke-linejoin':'round'});}
-function line(a,b,stroke='#ccc',width=2){return el('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke,'stroke-width':width});}
-function circle(cx,cy,z,r,from=0,to=2*Math.PI,steps=36){const p=[];for(let i=0;i<=steps;i++){const a=from+(to-from)*i/steps;p.push(iso(cx+r*Math.cos(a),cy+r*Math.sin(a),z));}return p;}
-function cylinder(item){
- const {x,y,z,k}=item,r=roll.D/2,zt=z+roll.width,color=colors[k%colors.length];
- const start=-Math.PI/4,end=3*Math.PI/4;
- poly(circle(x,y,z,r),'#777981','#686871');
- poly([...circle(x,y,zt,r,start,end,26),...circle(x,y,z,r,end,start,26)],color,'#85858d');
- poly(circle(x,y,zt,r),color,'#c4c4cc');
- poly(circle(x,y,zt+.01,roll.core/2),'#303036','#ececf1');
- poly(circle(x,y,zt+.02,Math.max(.001,roll.core/2-1)),'#232329','#76767e');
-}
-function wallFade(){return phase(elapsed,FILL_END,HOLD);}
-function boxBack(){const fade=wallFade();const p000=iso(0,0,0),p100=iso(box.L,0,0),p110=iso(box.L,box.W,0),p010=iso(0,box.W,0),p001=iso(0,0,box.H),p101=iso(box.L,0,box.H),p011=iso(0,box.W,box.H);
- poly([p000,p100,p110,p010],'#23232a','#707078');
- poly([p000,p100,p101,p001],'#97979e','#85858d',.3+.68*fade);
- poly([p000,p010,p011,p001],'#b0b0b6','#85858d',.3+.68*fade);
-}
-function boxFront(){const fade=wallFade();const p100=iso(box.L,0,0),p110=iso(box.L,box.W,0),p010=iso(0,box.W,0),p001=iso(0,0,box.H),p101=iso(box.L,0,box.H),p111=iso(box.L,box.W,box.H),p011=iso(0,box.W,box.H);
- poly([p010,p110,p111,p011],'#c3c3c9','#898992',.075+.905*fade);
- poly([p100,p110,p111,p101],'#b2b2b9','#898992',.075+.905*fade);
- line(p001,p101,'#c7c7cd',2.2);line(p101,p111,'#c7c7cd',2.2);line(p111,p011,'#c7c7cd',2.2);line(p011,p001,'#c7c7cd',2.2);
- line(p011,p010,'#888890',1.3);line(p111,p110,'#888890',1.3);line(p101,p100,'#888890',1.3);
-}
-// Los pares de solapas se mueven simultáneamente. Modelo geométrico
-// SVG isométrico: plegado de 90° (vertical) a 0° (horizontal).
-function phase(t,start,duration){return smooth((t-start)/duration);}
-function flapPolys(progress, axis){
-  if(progress<=0)return;
-  const theta=(1-progress)*Math.PI/2;
-  const c=Math.cos(theta),si=Math.sin(theta);
-  const L=box.L,W=box.W,H=box.H;
-  const eps=0.25;
-  if(axis==='short'){
-    // Solapas en los dos extremos cortos: x=0 y x=L.
-    const reach=Math.min(L*.43,W*.48);
-    for(const edge of [0,L]){
-      const dir=edge===0?1:-1;
-      const x2=edge+dir*reach*c;
-      const z2=H+reach*si;
-      const a=iso(edge,0,H+eps),b=iso(edge,W,H+eps);
-      const d=iso(x2,0,z2+eps),e=iso(x2,W,z2+eps);
-      poly([a,b,e,d],edge===0?'#97979e':'#b0b0b6','#d5d5d9',.98);
-      line(d,e,'#ececef',1.1);
-    }
-  } else {
-    // Solapas largas: llegan exactamente a la junta central.
-    const reach=W/2;
-    for(const edge of [0,W]){
-      const dir=edge===0?1:-1;
-      const y2=edge+dir*reach*c;
-      const z2=H+reach*si;
-      const a=iso(0,edge,H+2*eps),b=iso(L,edge,H+2*eps);
-      const d=iso(0,y2,z2+2*eps),e=iso(L,y2,z2+2*eps);
-      poly([a,b,e,d],edge===0?'#c3c3c9':'#b2b2b9','#eeeeee',.98);
-      line(d,e,'#e1e1e5',1.1);
-    }
-  }
-}
-function drawTape(progress){
-  if(progress<=0)return;
-  const L=box.L,W=box.W,H=box.H+.9;
-  const halfWidth=Math.min(Math.max(8,W*.055),W*.15);
-  const x1=0,x2=L*progress;
-  poly([iso(x1,W/2-halfWidth,H),iso(x2,W/2-halfWidth,H),
-        iso(x2,W/2+halfWidth,H),iso(x1,W/2+halfWidth,H)],
-       TAPE_COLOR,'#f15a64',.64);
-  // Línea fina luminosa que hace reconocible la cinta roja semitransparente.
-  line(iso(x1,W/2,H+.1),iso(x2,W/2,H+.1),'#ff8189',1.3);
-}
-function closureStatus(){
-  if(!positions.length)return 'No cabe ningún rollo con estas medidas';
-  if(complete)return 'Caja cerrada y precintada';
-  if(!playing&&elapsed>0)return 'Animación pausada';
-  if(elapsed<FILL_END)return playing?'Colocando rollos…':'Pulsa ▶ para iniciar la animación';
-  if(elapsed<SHORT_START)return 'Las paredes adquieren el color de la caja…';
-  if(elapsed<LONG_START)return 'Cerrando las dos solapas cortas…';
-  if(elapsed<TAPE_START)return 'Cerrando las dos solapas largas…';
-  return 'Aplicando cinta roja…';
-}
-function smooth(t){t=Math.min(1,Math.max(0,t));return t*t*(3-2*t);}
-function render(){
- svg.replaceChildren();boxBack();let settled=0;const visible=[];
- positions.forEach((p,i)=>{const t=(elapsed-i*STAGGER)/DURATION;if(t<=0)return;
- const start=box.H+Math.max(roll.width,box.H*.18),z=start+(p.z-start)*smooth(t);
- visible.push({...p,z});if(t>=1)settled++;
- });
- visible.sort((a,b)=>a.z-b.z||(a.x+a.y)-(b.x+b.y));
- visible.forEach(cylinder);boxFront();
- // Todo el cierre empieza ÚNICAMENTE después del llenado.
- const pShort=phase(elapsed,SHORT_START,SHORT_TIME);
- const pLong=phase(elapsed,LONG_START,LONG_TIME);
- if(elapsed>=SHORT_START)flapPolys(pShort,'short');
- if(elapsed>=LONG_START)flapPolys(pLong,'long');
- if(elapsed>=TAPE_START)drawTape(phase(elapsed,TAPE_START,TAPE_TIME));
- $('count').textContent=`${settled} / ${positions.length}`;
- $('progressFill').style.width=`${TOTAL?Math.min(100,100*elapsed/TOTAL):0}%`;
- $('status').textContent=closureStatus();
-}
-function syncIcon(){$('playIcon').innerHTML=playing?'<path d="M6 4h4v16H6z M14 4h4v16h-4z"/>':'<path d="M7 4 20 12 7 20Z"/>';
- $('play').setAttribute('aria-label',playing?'Pausar animación':'Reproducir animación');$('play').disabled=positions.length===0;}
-function tick(ts){if(!playing)return;if(previous===null)previous=ts;elapsed+=Math.min(100,ts-previous);previous=ts;
- if(elapsed>=TOTAL){elapsed=TOTAL;playing=false;complete=true;raf=null;render();syncIcon();return;}
- render();raf=requestAnimationFrame(tick);
-}
-function reset(){if(raf!==null)cancelAnimationFrame(raf);raf=null;elapsed=0;previous=null;playing=false;complete=false;render();syncIcon();}
-function toggle(){if(!positions.length)return;if(complete)reset();playing=!playing;previous=null;
- if(playing){raf=requestAnimationFrame(tick);}else{if(raf!==null)cancelAnimationFrame(raf);raf=null;render();}syncIcon();}
-function positive(id){const raw=$(id).value.trim().replace(',','.');if(!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw))throw new Error('Introduce un número válido en «'+$(''+id).previousElementSibling.textContent+'».');const n=Number(raw);if(!Number.isFinite(n)||n<=0)throw new Error('Todas las medidas deben ser mayores que cero.');return n;}
-function calculate(){
- try{
- const b={L:positive('L'),W:positive('W'),H:positive('H')},r={D:positive('D'),width:positive('width'),core:positive('core')};
- if(r.core>=r.D)throw new Error('El mandril debe tener un diámetro inferior al diámetro exterior.');
- const floorRatio=(a,b)=>Math.floor(a/b+1e-10);
- const usableHeight=Math.max(0,b.H-TOP_CLEARANCE);
- const n={nx:Math.max(0,floorRatio(b.L+GAP_XY,r.D+GAP_XY)),ny:Math.max(0,floorRatio(b.W+GAP_XY,r.D+GAP_XY)),nz:Math.max(0,floorRatio(usableHeight,r.width))};
- const total=n.nx*n.ny*n.nz;
- if(!Number.isFinite(total)||total>MAX_ROLLS)throw new Error('El resultado supera '+MAX_ROLLS+' rollos. Reduce las dimensiones de la caja o aumenta las del rollo para esta demostración.');
- box=b;roll=r;counts=n;positions=[];
- const occupiedL=n.nx*r.D+Math.max(0,n.nx-1)*GAP_XY;
- const occupiedW=n.ny*r.D+Math.max(0,n.ny-1)*GAP_XY;
- const mx=(b.L-occupiedL)/2,my=(b.W-occupiedW)/2;
- for(let k=0;k<n.nz;k++)for(let j=0;j<n.ny;j++)for(let i=0;i<n.nx;i++)positions.push({x:mx+r.D/2+i*(r.D+GAP_XY),y:my+r.D/2+j*(r.D+GAP_XY),z:k*r.width,k});
- FILL_END=positions.length?(positions.length-1)*STAGGER+DURATION:0;
- SHORT_START=FILL_END+HOLD;
- LONG_START=SHORT_START+SHORT_TIME;
- TAPE_START=LONG_START+LONG_TIME;
- TOTAL=positions.length?TAPE_START+TAPE_TIME:0;
- fitView();$('dims').textContent=[b.L,b.W,b.H].map(fmt).join(' × ')+' mm';
- $('diam').textContent=fmt(r.D)+' mm';$('rollwidth').textContent=fmt(r.width)+' mm';$('mandril').textContent=fmt(r.core)+' mm';
- $('distribution').textContent=`${n.nx} × ${n.ny} × ${n.nz} capas`;
- $('usableHeight').textContent=fmt(usableHeight)+' mm';
- $('legend').replaceChildren();for(let i=0;i<n.nz;i++){const d=document.createElement('div');d.className='legend-item';const sw=document.createElement('span');sw.className='swatch';sw.style.background=colors[i%colors.length];const t=document.createElement('span');t.textContent=`Capa ${i+1}`;d.append(sw,t);$('legend').append(d);}
- $('error').textContent='';reset();
- }catch(e){$('error').textContent=e.message;}
-}
-$('play').addEventListener('click',toggle);
-$('reset').addEventListener('click',reset);
-// Única fuente: resultados recibidos de Label Roll Calculator.
-// Sin llamada inicial a calculate(): no hay recálculo de embalaje.
-function cargarResultado(d){
- if(!d || ![d.L,d.A,d.H,d.D,d.Ar,d.Di,d.nx,d.ny,d.nz,d.total].every(Number.isFinite))return;
- const {L,A,H,D,Ar,Di,nx,ny,nz,total}=d;
- if([L,A,H,D,Ar,Di].some(v=>v<=0) || Di>=D ||
-    [nx,ny,nz,total].some(v=>!Number.isSafeInteger(v)||v<0) ||
-    nx*ny*nz!==total || total>MAX_ROLLS)return;
- box={L,W:A,H};roll={D,width:Ar,core:Di};
- counts={nx,ny,nz};positions=[];
- // Coordenadas de los rollos recibidos: nx, ny y nz proceden de la calculadora.
- // La vista solo construye las posiciones gráficas.
- const mx=(L-nx*D)/2,my=(A-ny*D)/2;
- for(let k=0;k<nz;k++)for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
-   positions.push({x:mx+D/2+i*D,y:my+D/2+j*D,z:k*Ar,k});
- }
- FILL_END=positions.length?(positions.length-1)*STAGGER+DURATION:0;
- SHORT_START=FILL_END+HOLD;LONG_START=SHORT_START+SHORT_TIME;
- TAPE_START=LONG_START+LONG_TIME;
- TOTAL=positions.length?TAPE_START+TAPE_TIME:0;
- fitView();
- $('dims').textContent=[L,A,H].map(fmt).join(' × ')+' mm';
- $('diam').textContent=fmt(D)+' mm';
- $('rollwidth').textContent=fmt(Ar)+' mm';
- $('mandril').textContent=fmt(Di)+' mm';
- $('distribution').textContent=`${nx} × ${ny} × ${nz} capas`;
- $('usableHeight').textContent=fmt(H)+' mm (según calculadora)';
- $('legend').replaceChildren();
- for(let i=0;i<nz;i++){
-   const div=document.createElement('div');div.className='legend-item';
-   const s=document.createElement('span');s.className='swatch';s.style.background=colors[i%colors.length];
-   const t=document.createElement('span');t.textContent=`Capa ${i+1}`;div.append(s,t);$('legend').append(div);
- }
- reset();
-}
-window.addEventListener('message',event=>{
- if(event.source!==window.parent)return;
- if(event.data?.tipo==='LABEL_ROLL_VISTA')cargarResultado(event.data.datos);
- if(event.data?.tipo==='LABEL_ROLL_STOP')reset();
-});
-$('status').textContent='Abre VISTA 3D desde la calculadora';
-</script>
+<script src="visor.js?v=2.0.0" defer></script>
 </body>
 </html>

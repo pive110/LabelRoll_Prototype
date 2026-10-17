@@ -1,48 +1,31 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Label Roll Calculator</title>
-<link rel="manifest" href="manifest.json?v=2"><link rel="apple-touch-icon" href="icon-180.png?v=2"><link rel="icon" href="favicon.ico?v=2" sizes="any"><meta name="theme-color" content="#000000">
-<style>
-*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#eee;margin:0;padding:16px;color:#111}
-.calculadora{max-width:680px;margin:10px auto;background:#fff;padding:22px;border-radius:16px;box-shadow:0 3px 14px #0002}h1{text-align:center;font-size:25px;margin:4px 0 5px}.sub{text-align:center;color:#777;font-size:13px;margin-bottom:24px}
-.seccion{font-size:13px;font-weight:800;color:#555;border-bottom:2px solid #222;padding-bottom:7px;margin-top:22px;text-transform:uppercase}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.campo{margin-top:15px}label{display:block;font-weight:bold;font-size:14px;margin-bottom:7px}input{width:100%;padding:13px;font-size:19px;border:2px solid #aaa;border-radius:8px;background:#fff}input:focus{outline:none;border-color:#e30613}.unidad{font-size:11px;color:#777;margin-top:3px}button{width:100%;padding:17px;margin-top:24px;font-size:19px;font-weight:bold;border:none;border-radius:9px;background:#222;color:#fff;cursor:pointer}button:active{transform:scale(.98)}.resultado{margin-top:22px;padding:18px;background:#eee;border-radius:11px}.resultado h2{font-size:15px;margin:0 0 14px}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#fff;border-radius:9px;padding:12px}.titulo{font-size:11px;font-weight:bold;color:#666}.numero{font-size:27px;font-weight:bold;margin-top:4px;overflow-wrap:anywhere}.principal{background:#222;color:#fff}.principal .titulo{color:#bbb}.principal .numero{font-size:31px}.nota{margin-top:13px;font-size:12px;color:#666;line-height:1.5}.error{margin-top:15px;padding:12px;background:#ffe1e1;color:#9b0000;border-radius:8px;font-weight:bold;display:none}.auto-info{background:#f6f6f6;padding:13px;border-left:4px solid #e30613;border-radius:8px;font-size:13px;line-height:1.5;margin-top:13px}.auto-info strong{color:#bd0011}.recomendada{background:#fff;border-left:4px solid #e30613;padding:14px;margin-top:14px;border-radius:9px}.recomendada h3{margin:0 0 8px;font-size:14px}.recomendada p{margin:5px 0;font-size:13px;line-height:1.45}.comparacion{margin-top:15px;overflow-x:auto}.comparacion table{border-collapse:collapse;width:100%;min-width:530px;font-size:12px}.comparacion th,.comparacion td{text-align:left;padding:10px 8px;border-bottom:1px solid #ddd}.comparacion th{background:#222;color:#fff}.comparacion tr.ganadora{background:#ffe9ec;font-weight:bold}.tag{color:#a00011;font-weight:bold}.resaltado{font-size:17px;font-weight:800}.vista-btn{background:#e30613;margin-top:14px;font-size:16px;display:none}.vista-btn:focus-visible,.vista-close:focus-visible{outline:3px solid #e30613;outline-offset:3px}.vista-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.84);padding:12px;align-items:center;justify-content:center}.vista-overlay.abierto{display:flex}.vista-dialogo{width:min(100%,940px);height:min(92dvh,900px);background:#101014;border:1px solid #444;border-radius:13px;display:flex;flex-direction:column;overflow:hidden}.vista-cabecera{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;color:#fff;background:#18181b;font-size:16px;font-weight:bold}.vista-close{width:45px;min-height:45px;margin:0;padding:0;background:#333;color:white;font-size:25px;border-radius:8px}#visor3d{width:100%;flex:1;min-height:0;border:0;background:#0b0b0d}body.vista-abierta{overflow:hidden}.vista-lienzo{flex:1;min-height:0;position:relative;background:radial-gradient(ellipse at center,#252b36,#0b0b0d);overflow:hidden}.vista-lienzo canvas{display:block;width:100%;height:100%}.vista-detalle{position:absolute;left:12px;bottom:12px;right:12px;color:#eee;font-size:12px;pointer-events:none;background:#131820cc;padding:10px;border-radius:8px;line-height:1.5}@media(max-width:520px){.grid,.result-grid{grid-template-columns:1fr}.calculadora{padding:18px}body{padding:8px}}
-.espesor-rapido{grid-column:1/-1;margin-top:4px;border:1px solid #dedee2;border-radius:11px;overflow:hidden;background:#fafafa}.espesor-rapido summary{list-style:none;cursor:pointer;padding:13px 15px;font-size:14px;font-weight:800;color:#222;display:flex;align-items:center;justify-content:space-between}.espesor-rapido summary::-webkit-details-marker{display:none}.espesor-rapido summary:after{content:"+";font-size:22px;color:#d20818}.espesor-rapido[open] summary:after{content:"−"}.espesor-cuerpo{padding:0 15px 15px;border-top:1px solid #e5e5e5}.espesor-cuerpo p{font-size:12px;color:#555;line-height:1.5}.espesor-resultado{display:none;background:#fff;border-left:4px solid #e30613;padding:13px;border-radius:7px;margin-top:12px;font-size:14px}.espesor-resultado strong{font-size:22px}.espesor-resultado button{margin-top:12px;font-size:14px;padding:13px;background:#e30613}.espesor-error{display:none;color:#a40000;background:#ffe3e6;padding:10px;border-radius:7px;font-size:13px;margin-top:10px}.rapido-btn{margin-top:14px;font-size:15px;padding:13px}.hint-rapido{color:#777;font-size:12px}
-
-/* Acceso compacto y contextual a la calculadora de espesor */
-.campo-label-accion{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:23px}
-.campo-label-accion label{margin-bottom:0}
-.boton-mini-espesor{width:auto;flex:none;margin:0;padding:6px 9px;border:1px solid #e30613;border-radius:7px;background:#fff4f5;color:#b80013;font:700 12px/1.15 inherit;font-family:inherit;font-size:12px;cursor:pointer}
-.boton-mini-espesor:hover,.boton-mini-espesor[aria-expanded="true"]{background:#e30613;color:#fff}
-.boton-mini-espesor:focus-visible{outline:3px solid #e30613;outline-offset:2px}
-.espesor-rapido:not([open]){display:none}
-.espesor-rapido summary{display:none}
-.espesor-rapido .espesor-cuerpo{padding-top:14px;border-top:none}
-@media(max-width:370px){.boton-mini-espesor{font-size:11px;padding:5px 6px}}
-</style>
-<link rel="stylesheet" href="cajas-selector.css?v=7">
-<link rel="stylesheet" href="acabado.css?v=7">
-</head>
-<body>
-<div class="calculadora">
-<h1><span class="marca-simbolo" aria-hidden="true"><img src="icon-180.png?v=2" alt="" width="44" height="44"></span><span class="marca-nombre">LABEL<span class="marca-roll">ROLL</span><small>CALCULATOR</small></span></h1>
-<div class="seccion">Datos del pedido y material</div>
-<div class="grid">
-<div class="campo"><label for="total">Cantidad total</label><input id="total" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 300000"><div class="unidad">etiquetas</div></div>
-<div class="campo"><label for="avance">Avance</label><input id="avance" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 100"><div class="unidad">mm / etiqueta</div></div>
-<div class="campo"><label for="mandril">Ø mandril</label><input id="mandril" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 84"><div class="unidad">mm</div></div>
-<div class="campo"><label for="separacion">Separación</label><input id="separacion" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="0 (si está vacío)"><div class="unidad">mm · si se deja vacío, se considera 0</div></div>
-<div class="campo"><div class="campo-label-accion"><label for="espesor">Espesor</label><button type="button" class="boton-mini-espesor" id="toggleEspesor" aria-controls="espesorRapido" aria-expanded="false" onclick="alternarEspesorRapido()" title="Abrir calculadora rápida de espesor">↗ Calcular espesor</button></div><input id="espesor" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 0,11521"><div class="unidad">mm</div></div>
-<details class="espesor-rapido" id="espesorRapido"><summary>Calculadora rápida de espesor</summary><div class="espesor-cuerpo"><p>Mide el diámetro exterior de un rollo ya fabricado. Se utilizarán automáticamente el avance, la separación y el mandril introducidos arriba.</p><div class="grid"><div class="campo"><label for="muestraDiametro">Ø exterior medido</label><input id="muestraDiametro" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 148,18"><div class="unidad">mm</div></div><div class="campo"><label for="muestraEtiquetas">Etiquetas del rollo de muestra</label><input id="muestraEtiquetas" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><div class="unidad">etiquetas · cantidad real del rollo medido</div></div></div><button class="rapido-btn" type="button" onclick="calcularEspesorRapido()">CALCULAR ESPESOR</button><div id="espesorError" class="espesor-error" role="alert"></div><div id="espesorResultado" class="espesor-resultado" aria-live="polite"><div>Espesor estimado del conjunto</div><strong id="espesorValor">—</strong><div id="espesorMicras" class="hint-rapido"></div><button type="button" onclick="usarEspesorRapido()">UTILIZAR ESTE ESPESOR EN EL PEDIDO ↑</button></div><p>Modelo geométrico: e = π × (Df² − Di²) / [4 × N × (avance + separación)]. Es un espesor efectivo aproximado del material enrollado (soporte + adhesivo + frontal), no solo del papel. Para más precisión, mide varios rollos sin comprimirlos.</p></div></details>
-<div class="campo"><label for="diamMax">Ø máximo (opcional)</label><input id="diamMax" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Dejar vacío si no se indica"><div class="unidad">mm · con Ø máximo, cálculo automático</div></div>
-<div class="campo"><label for="etiquetasManual">Etiquetas por rollo (opcional)</label><input id="etiquetasManual" type="number" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><div class="unidad">Sin Ø máximo, indica este valor</div></div>
-<div class="campo"><label for="anchoRollo">Ancho del rollo</label><input id="anchoRollo" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 45"><div class="unidad">mm (medida axial del rollo)</div></div>
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png?v=4"><link rel="icon" href="favicon.ico?v=4"><meta name="theme-color" content="#19191b">
+<link rel="stylesheet" href="styles.css?v=2.0.0">
+<script src="cajas.js?v=2.0.0" defer></script><script src="calculos.js?v=2.0.0" defer></script><script src="cajas-selector.js?v=2.0.0" defer></script><script src="interfaz.js?v=2.0.0" defer></script>
+</head><body class="theme-dark">
+<div class="entrada-app" aria-hidden="true"><div class="entrada-marca"><img src="icon-512.png?v=4" width="80" height="80" alt=""></div></div>
+<main class="calculadora" id="calculadora">
+<div class="titulo-app-v2"><h1><span class="marca-simbolo" aria-hidden="true"><img src="icon-180.png?v=4" alt="" width="44" height="44"></span><span class="marca-nombre">LABEL<span class="marca-roll">ROLL</span><small>CALCULATOR</small></span></h1><button id="cambiarTema" class="tema-switch" type="button" aria-label="Cambiar entre modo claro y modo oscuro" aria-pressed="true"><span aria-hidden="true">☀</span><span class="tema-indicador" aria-hidden="true"></span><span aria-hidden="true">☾</span></button></div>
+<h2 class="seccion">Datos del pedido y material</h2>
+<div class="grid" id="datosPedido">
+<div class="campo campo-ancho-completo"><label for="total">Cantidad total</label><input id="total" aria-describedby="totalError" type="text" autocomplete="off" enterkeyhint="next" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 300000"><p class="error-campo" id="totalError" hidden></p><div class="unidad">etiquetas</div></div>
+<div class="campo"><label for="mandril">Ø mandril</label><input id="mandril" aria-describedby="mandrilError" type="text" autocomplete="off" enterkeyhint="next" inputmode="decimal" placeholder="Ej. 84"><p class="error-campo" id="mandrilError" hidden></p><div class="unidad">mm</div></div>
+<div class="campo"><label for="etiquetasManual">Etiquetas × rollo</label><input id="etiquetasManual" aria-describedby="etiquetasManualError" type="text" autocomplete="off" enterkeyhint="next" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><p class="error-campo" id="etiquetasManualError" hidden></p><div class="unidad">Sin Ø máximo, indica este valor</div></div>
+<div class="campo campo-ancho-completo"><label for="anchoRollo">Ancho del rollo</label><input id="anchoRollo" aria-describedby="anchoRolloError" type="text" autocomplete="off" enterkeyhint="next" inputmode="decimal" placeholder="Ej. 45"><p class="error-campo" id="anchoRolloError" hidden></p><div class="unidad">mm · opcional, necesario para calcular cajas</div></div>
+<div class="campo"><label for="avance">Avance</label><input id="avance" aria-describedby="avanceError" type="text" autocomplete="off" enterkeyhint="next" inputmode="decimal" placeholder="Ej. 100"><p class="error-campo" id="avanceError" hidden></p><div class="unidad">mm / etiqueta</div></div>
+<div class="campo"><label for="separacion">Separación</label><input id="separacion" aria-describedby="separacionError" type="text" autocomplete="off" enterkeyhint="next" inputmode="decimal" placeholder="0 (si está vacío)"><p class="error-campo" id="separacionError" hidden></p><div class="unidad">mm · si se deja vacío, se considera 0</div></div>
+<div class="campo campo-ancho-completo"><label for="diamMax">Ø máximo (opcional)</label><input id="diamMax" aria-describedby="diamMaxError" type="text" autocomplete="off" enterkeyhint="next" inputmode="decimal" placeholder="Dejar vacío si no se indica"><p class="error-campo" id="diamMaxError" hidden></p><div class="unidad">mm · con Ø máximo, cálculo automático</div></div>
+<div class="campo campo-ancho-completo"><div class="campo-label-accion"><label for="espesor">Espesor</label><button type="button" class="boton-mini-espesor" id="toggleEspesor" aria-controls="espesorRapido" aria-expanded="false" title="Abrir calculadora rápida de espesor">↗ Calcular espesor</button></div><input id="espesor" aria-describedby="espesorError" type="text" autocomplete="off" enterkeyhint="next" inputmode="decimal" placeholder="Ej. 0,11521"><p class="error-campo" id="espesorError" hidden></p><div class="unidad">mm</div></div>
+<div class="campo campo-ancho-completo" id="opcionesDiametro" hidden><label for="modoRollos">Reparto con Ø máximo</label><select id="modoRollos"><option value="iguales">Rollos iguales · pedido exacto</option><option value="capacidad">Aprovechar Ø máximo · último rollo parcial</option></select><p class="ayuda" id="ayudaModo">Con Ø máximo, las etiquetas por rollo se calculan automáticamente.</p></div>
+<details class="espesor-rapido" id="espesorRapido"><summary>Calculadora rápida de espesor</summary><div class="espesor-cuerpo"><p>Mide el diámetro exterior de un rollo ya fabricado. Se utilizarán automáticamente el avance, la separación y el mandril introducidos arriba.</p><div class="grid"><div class="campo"><label for="muestraDiametro">Ø exterior medido</label><input id="muestraDiametro" aria-describedby="muestraDiametroError" type="text" autocomplete="off" enterkeyhint="done" inputmode="decimal" placeholder="Ej. 148,18"><p class="error-campo" id="muestraDiametroError" hidden></p><div class="unidad">mm</div></div><div class="campo"><label for="muestraEtiquetas">Etiquetas del rollo de muestra</label><input id="muestraEtiquetas" aria-describedby="muestraEtiquetasError" type="text" autocomplete="off" enterkeyhint="done" min="1" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Ej. 1000"><p class="error-campo" id="muestraEtiquetasError" hidden></p><div class="unidad">etiquetas · cantidad real del rollo medido</div></div></div><button class="rapido-btn" id="calcularMuestra" type="button">CALCULAR ESPESOR</button><div id="muestraError" class="espesor-error" role="alert" hidden></div><div id="espesorResultado" class="espesor-resultado" aria-live="polite" hidden><div>Espesor estimado del conjunto</div><strong id="espesorValor">—</strong><div id="espesorMicras" class="hint-rapido"></div><button id="usarMuestra" type="button" disabled>UTILIZAR ESTE ESPESOR EN EL PEDIDO ↑</button></div><p>Modelo geométrico: e = π × (Df² − Di²) / [4 × N × (avance + separación)]. Es un espesor efectivo aproximado del material enrollado (soporte + adhesivo + frontal), no solo del papel. Para más precisión, mide varios rollos sin comprimirlos.</p></div></details>
 </div>
-<div class="seccion">Embalaje automático</div>
-
-<button id="calcularEmbalaje" type="button" onclick="calcular()">CALCULAR</button><div id="error" class="error" role="alert"></div>
-<div class="resultado"><h2>RESULTADOS</h2>
+<h2 class="seccion" id="tituloEmbalaje">Embalaje automático</h2>
+<div class="acciones-calculo"><button id="calcularEmbalaje" type="button">CALCULAR</button></div>
+<div id="error" class="error" role="alert" hidden></div>
+<section class="resultado" aria-labelledby="tituloResultados"><h2 id="tituloResultados">RESULTADOS</h2><p id="estadoResultados" class="estado-resultados" role="status">Introduce los datos y pulsa Calcular.</p>
 <div class="result-grid">
 <div class="card principal"><div class="titulo">ETIQUETAS / ROLLO</div><div id="rEtiquetas" class="numero">—</div></div>
 <div class="card principal"><div class="titulo">Nº DE ROLLOS</div><div id="rRollos" class="numero">—</div></div>
@@ -51,253 +34,17 @@
 <div class="card"><div class="titulo" id="tituloMax">MÁX. ETIQUETAS POR Ø</div><div id="rMax" class="numero">—</div></div>
 <div class="card"><div class="titulo">ROLLOS / CAJA</div><div id="rCaja" class="numero">—</div></div>
 <div class="card"><div class="titulo">Nº DE CAJAS</div><div id="rCajas" class="numero">—</div></div>
-<div class="card"><div class="titulo">ETIQUETAS PRODUCIDAS</div><div id="rProducidas" class="numero">—</div><div id="pedidoVerificado" class="pedido-verificado" role="status" aria-label="Cantidad del pedido verificada" hidden><span class="pedido-check" aria-hidden="true">✓</span></div></div>
+<div class="card"><div class="titulo">ETIQUETAS PLANIFICADAS</div><div id="rProducidas" class="numero">—</div><div id="pedidoVerificado" class="pedido-verificado" role="status" aria-label="El reparto previsto coincide con la cantidad del pedido" title="El reparto previsto coincide con el pedido; no verifica la producción real" hidden><span class="pedido-check" aria-hidden="true">✓</span></div></div>
 </div>
+<p id="nota" class="nota" hidden></p>
 <div id="recomendacion" class="recomendada" hidden></div>
 <div id="comparacion" class="comparacion" hidden></div>
-<div id="nota" class="nota" style="display:none"></div><button id="abrirVista" class="vista-btn" type="button" onclick="abrirVista()">◈ VISTA 3D</button>
-</div></div>
-<div class="vista-overlay" id="overlayVista" role="presentation"><div class="vista-dialogo" role="dialog" aria-modal="true" aria-label="Vista isométrica del embalaje"><div class="vista-cabecera"><span>VISTA 3D · EMBALAJE</span><button class="vista-close" id="cerrarVista" type="button" onclick="cerrarVista()" aria-label="Cerrar vista">×</button></div><iframe id="visorOriginal" title="Label Roll 3D v0.8 · animación original de GitHub" src="about:blank" loading="lazy" style="display:none;flex:1;min-height:0;width:100%;border:0;background:#0b0b0d"></iframe><div class="vista-lienzo" id="lienzoAlternativo" style="display:none"><canvas id="visor3d" aria-label="Esquema isométrico de disposición escalonada"></canvas><div id="vistaDetalle" class="vista-detalle"></div></div></div></div>
-<script>
-'use strict';
-const CAJAS = Object.freeze([
- {nombre:'CampoFr',L:300,A:300,H:210},
- {nombre:'N1',L:400,A:300,H:300},
- {nombre:'N1 · 1 corte',L:400,A:300,H:250},
- {nombre:'N1 · 2 cortes',L:400,A:300,H:200}
-]);
-let embalajeParaVista=null,botonAnterior=null;
-// La animación original está en el archivo visor-3d.html del mismo repositorio.
-// Se recarga el visor al abrir para restaurar sus controles y su secuencia de cierre.
-let vistaCarga=0;
-function abrirVista(){
- if(!embalajeParaVista)return;
- botonAnterior=document.activeElement;
- document.getElementById('overlayVista').classList.add('abierto');
- document.body.classList.add('vista-abierta');
- document.getElementById('cerrarVista').focus();
- const frame=document.getElementById('visorOriginal');
- document.getElementById('lienzoAlternativo').style.display='none';
- frame.style.display='block';
- // Usar siempre el visor animado original, nunca el lienzo esquemático.
- vistaCarga++;
- frame.src='./visor-3d.html?vista='+vistaCarga;
-}
-function cerrarVista(){
- document.getElementById('overlayVista').classList.remove('abierto');
- document.body.classList.remove('vista-abierta');
- const frame=document.getElementById('visorOriginal');
- if(frame.contentWindow)frame.contentWindow.postMessage({tipo:'LABEL_ROLL_STOP'},location.origin);
- if(botonAnterior&&botonAnterior.focus)botonAnterior.focus();
-}
-function enviarVistaOriginal(){
- const d=embalajeParaVista,frame=document.getElementById('visorOriginal');
- if(!d||!frame.contentWindow)return;
- const nx=Math.floor((d.L+1e-9)/d.D),ny=Math.floor((d.A+1e-9)/d.D);
- frame.contentWindow.postMessage({tipo:'LABEL_ROLL_VISTA',datos:{L:d.L,A:d.A,H:d.H,D:d.D,Ar:d.Ar,Di:d.Di,nx,ny,nz:d.nz,total:nx*ny*d.nz}},location.origin);
-}
-document.getElementById('visorOriginal').addEventListener('load',enviarVistaOriginal);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('overlayVista').classList.contains('abierto'))cerrarVista();});
-window.addEventListener('resize',()=>{if(document.getElementById('overlayVista').classList.contains('abierto'))dibujarVista();});
-function centrosCapa(d){
- const coords=[];const radio=d.D/2, paso=d.D*Math.sqrt(3)/2;
- if(d.patron==='Cuadrícula'){
-  const nx=Math.floor((d.L+1e-8)/d.D),ny=Math.floor((d.A+1e-8)/d.D);
-  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)coords.push({x:radio+i*d.D,y:radio+j*d.D});
- }else if(d.patron==='Escalonado por filas'){
-  const filas=Math.floor((d.A-d.D+1e-8)/paso)+1;
-  for(let j=0;j<filas;j++){
-   const offset=j%2?radio:0;
-   const n=cabenEnFila(d.L,d.D,offset);
-   for(let i=0;i<n;i++)coords.push({x:radio+offset+i*d.D,y:radio+j*paso});
-  }
- }else{
-  const columnas=Math.floor((d.L-d.D+1e-8)/paso)+1;
-  for(let i=0;i<columnas;i++){
-   const offset=i%2?radio:0;
-   const n=cabenEnFila(d.A,d.D,offset);
-   for(let j=0;j<n;j++)coords.push({x:radio+i*paso,y:radio+offset+j*d.D});
-  }
- }
- return coords;
-}
-function dibujarVista(){
- const d=embalajeParaVista;if(!d)return;
- const canvas=document.getElementById('visor3d'),parent=canvas.parentElement;
- const w=parent.clientWidth,h=parent.clientHeight;
- if(w<=0||h<=0)return;
- const ratio=Math.min(window.devicePixelRatio||1,2);
- canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);
- const ctx=canvas.getContext('2d');ctx.scale(ratio,ratio);ctx.clearRect(0,0,w,h);
- // Isometric projection: x toward right-down, y toward left-down, z vertically up.
- const bx={x:.87,y:.44},by={x:-.87,y:.44},bz={x:0,y:-1.25};
- const project=(x,y,z)=>({x:x*bx.x+y*by.x+z*bz.x,y:x*bx.y+y*by.y+z*bz.y});
- const verts=[];for(const x of [0,d.L])for(const y of [0,d.A])for(const z of [0,d.H])verts.push(project(x,y,z));
- const minX=Math.min(...verts.map(v=>v.x)),maxX=Math.max(...verts.map(v=>v.x));
- const minY=Math.min(...verts.map(v=>v.y)),maxY=Math.max(...verts.map(v=>v.y));
- const scale=Math.min((w-55)/(maxX-minX),(h-130)/(maxY-minY));
- const ox=(w-(maxX-minX)*scale)/2-minX*scale;
- const oy=(h-45-(maxY-minY)*scale)/2-minY*scale+12;
- const pt=(x,y,z)=>{const q=project(x,y,z);return{x:ox+q.x*scale,y:oy+q.y*scale};};
- const path=(pts)=>{ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);ctx.closePath();};
- const floor=[pt(0,0,0),pt(d.L,0,0),pt(d.L,d.A,0),pt(0,d.A,0)];
- path(floor);ctx.fillStyle='#353b45';ctx.fill();ctx.strokeStyle='#74808f';ctx.lineWidth=1.5;ctx.stroke();
- const centers=centrosCapa(d);
- const items=[];
- for(let k=0;k<d.nz;k++)for(const c of centers)items.push({x:c.x,y:c.y,z:k*d.Ar});
- items.sort((a,b)=>(a.x+a.y)-(b.x+b.y)||a.z-b.z);
- const r=d.D/2, hole=Math.min(d.Di/2,r*.82);
- const ellipse=(x,y,z,rad)=>{
-  // An approximate projected circular top face under the isometric view.
-  const center=pt(x,y,z);
-  ctx.beginPath();ctx.ellipse(center.x,center.y,rad*scale*1.22,rad*scale*.56,0,0,Math.PI*2);
- };
- for(const it of items){
-  const top=pt(it.x,it.y,it.z+d.Ar),bottom=pt(it.x,it.y,it.z);
-  const rx=r*scale*1.22,ry=r*scale*.56;
-  ctx.beginPath();ctx.moveTo(top.x-rx,top.y);ctx.lineTo(bottom.x-rx,bottom.y);
-  ctx.ellipse(bottom.x,bottom.y,rx,ry,0,Math.PI,0,true);
-  ctx.lineTo(top.x+rx,top.y);ctx.closePath();
-  ctx.fillStyle='#b6becb';ctx.fill();ctx.strokeStyle='#5a6471';ctx.lineWidth=.8;ctx.stroke();
-  ellipse(it.x,it.y,it.z+d.Ar,r);ctx.fillStyle='#f7f9fc';ctx.fill();ctx.strokeStyle='#7e899a';ctx.stroke();
-  ellipse(it.x,it.y,it.z+d.Ar,hole);ctx.fillStyle='#535d6c';ctx.fill();ctx.strokeStyle='#a4afbb';ctx.stroke();
- }
- // Box edges drawn over roll arrangement; top is intentionally open.
- const edges=[[[0,0,0],[d.L,0,0]],[[d.L,0,0],[d.L,d.A,0]],[[d.L,d.A,0],[0,d.A,0]],[[0,d.A,0],[0,0,0]],
- [[0,0,0],[0,0,d.H]],[[d.L,0,0],[d.L,0,d.H]],[[d.L,d.A,0],[d.L,d.A,d.H]],[[0,d.A,0],[0,d.A,d.H]],
- [[0,0,d.H],[d.L,0,d.H]],[[d.L,0,d.H],[d.L,d.A,d.H]],[[d.L,d.A,d.H],[0,d.A,d.H]],[[0,d.A,d.H],[0,0,d.H]]];
- ctx.lineWidth=2;ctx.strokeStyle='#ed334e';
- for(const [a,b] of edges){const u=pt(...a),v=pt(...b);ctx.beginPath();ctx.moveTo(u.x,u.y);ctx.lineTo(v.x,v.y);ctx.stroke();}
- document.getElementById('vistaDetalle').textContent=`Caja ${d.L} × ${d.A} × ${d.H} mm  ·  ${d.patron}  ·  ${d.capa} rollos/capa × ${d.nz} capas  ·  ${items.length} rollos/caja · vista esquemática (animación original pendiente para escalonado)`;
-}
-
-function alternarEspesorRapido(){
- const panel=document.getElementById('espesorRapido');
- panel.open=!panel.open;
- document.getElementById('toggleEspesor').setAttribute('aria-expanded',String(panel.open));
- if(panel.open)panel.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-document.getElementById('espesorRapido').addEventListener('toggle',function(){
- document.getElementById('toggleEspesor').setAttribute('aria-expanded',String(this.open));
-});
-let espesorRapidoCalculado=null;
-function calcularEspesorRapido(){
- const err=document.getElementById('espesorError'),box=document.getElementById('espesorResultado');
- err.style.display='none';box.style.display='none';espesorRapidoCalculado=null;
- const ids=['muestraDiametro','muestraEtiquetas','mandril','avance'];
- if(ids.some(id=>document.getElementById(id).value.trim()==='')){err.textContent='Introduce el diámetro exterior medido, las etiquetas de la muestra y los datos de avance, separación y mandril del pedido.';err.style.display='block';return;}
- const D=n('muestraDiametro'),N=n('muestraEtiquetas'),Di=n('mandril'),Av=n('avance'),S=n('separacion');
- if(![D,N,Di,Av,S].every(Number.isFinite)||D<=Di||Di<=0||Av<=0||S<0||!Number.isSafeInteger(N)||N<=0){err.textContent='Comprueba los datos: el diámetro medido debe superar el del mandril, N debe ser entero positivo, el avance positivo y la separación no negativa.';err.style.display='block';return;}
- const e=Math.PI*(D*D-Di*Di)/(4*N*(Av+S));
- if(!Number.isFinite(e)||e<=0){err.textContent='No se puede obtener un espesor válido con estos datos.';err.style.display='block';return;}
- espesorRapidoCalculado=e;
- document.getElementById('espesorValor').textContent=fmt(e,5)+' mm';
- document.getElementById('espesorMicras').textContent='Equivale a '+fmt(e*1000,2)+' µm (micras)';
- box.style.display='block';
-}
-function usarEspesorRapido(){
- if(!(espesorRapidoCalculado>0))return;
- const campo=document.getElementById('espesor');campo.value=Number(espesorRapidoCalculado.toFixed(8)).toString().replace('.', ',');
- document.getElementById('espesorRapido').open=false;
- campo.focus();
- document.getElementById('nota').textContent='';
- document.getElementById('recomendacion').hidden=true;document.getElementById('comparacion').hidden=true;document.getElementById('abrirVista').style.display='none';embalajeParaVista=null;
-}
-function n(id){return Number(document.getElementById(id).value.trim().replace(',', '.'));}
-function fmt(x,dec=2){return Number(x).toLocaleString('es-ES',{minimumFractionDigits:dec,maximumFractionDigits:dec});}
-function fmt0(x){return Math.round(x).toLocaleString('es-ES');}
-function mayorDivisor(total,maximo){let mejor=1;for(let i=1;i*i<=total;i++){if(total%i===0){const d1=i,d2=total/i;if(d1<=maximo&&d1>mejor)mejor=d1;if(d2<=maximo&&d2>mejor)mejor=d2;}}return mejor;}
-function cabenEnFila(largo,diametro,desplazamiento){return Math.max(0,Math.floor((largo-diametro-desplazamiento)/diametro+1e-10)+1);}
-// Distribución exclusiva en cuadrícula, sin filas ni columnas escalonadas.
-// Los rollos conservan la misma orientación en todas las capas.
-function evaluarPatrones(L,A,D){
- const nx=Math.floor((L+1e-9)/D);
- const ny=Math.floor((A+1e-9)/D);
- return {nombre:'Cuadrícula',capa:nx*ny,nx,ny,cuadricula:true};
-}
-function optimizarCajas(D,Ar,rollos){
- return CAJAS.map(caja=>{
-  const patron=evaluarPatrones(caja.L,caja.A,D);
-  const capas=Math.floor((caja.H+1e-9)/Ar),capacidad=patron.capa*capas;
-  const cajas=capacidad>0?Math.ceil(rollos/capacidad):0;
-  const volumenTotal=cajas*caja.L*caja.A*caja.H;
-  const ultimos=capacidad>0?rollos-(cajas-1)*capacidad:0;
-  return {...caja,patron,capas,capacidad,cajas,volumenTotal,ultimos,huecos:capacidad>0?cajas*capacidad-rollos:0,huecoSuperior:capacidad>0?caja.H-capas*Ar:0};
- });
-}
-function mostrarComparacion(opciones,mejor){
- const tabla=document.getElementById('comparacion');tabla.hidden=false;
- const filas=opciones.map(o=>{
-  const marca=o===mejor?' <span class="tag">★</span>':'';
-  return `<tr class="${o===mejor?'ganadora':''}"><td>${o.nombre}${marca}</td><td>${o.capacidad?fmt0(o.capacidad):'No cabe'}</td><td>${o.capacidad?fmt0(o.cajas):'—'}</td><td>${o.capacidad?o.patron.nombre:'—'}</td></tr>`;
- }).join('');
- tabla.innerHTML=`<table><thead><tr><th>Caja</th><th>Rollos/caja</th><th>Cajas</th><th>Disposición</th></tr></thead><tbody>${filas}</tbody></table>`;
-}
-function calcular(){
- document.getElementById('pedidoVerificado').hidden=true;
- const error=document.getElementById('error');error.style.display='none';
- embalajeParaVista=null;document.getElementById('abrirVista').style.display='none';document.getElementById('recomendacion').hidden=true;document.getElementById('comparacion').hidden=true;
- const total=n('total'),Av=n('avance'),S=n('separacion'),e=n('espesor'),Di=n('mandril'),Dmax=n('diamMax'),Ar=n('anchoRollo');
- const hayDmax=document.getElementById('diamMax').value.trim()!=='';
- const hayManual=document.getElementById('etiquetasManual').value.trim()!=='';
- const nManual=n('etiquetasManual');
- const prod=['total','avance','espesor','mandril'];
- if(prod.some(id=>document.getElementById(id).value.trim()==='')||!Number.isSafeInteger(total)||total<=0||!Number.isFinite(Av)||Av<=0||!Number.isFinite(S)||S<0||!Number.isFinite(e)||e<=0||!Number.isFinite(Di)||Di<=0){
-   error.textContent='Revisa los datos de producción. La separación puede estar vacía o ser cero.';error.style.display='block';return;
- }
- if(!hayDmax&&!hayManual){
-   error.textContent='Indica el Ø máximo o las etiquetas por rollo para calcular.';error.style.display='block';return;
- }
- let maxFisico=null, etiquetas, rollos;
- if(hayDmax){
-   if(!Number.isFinite(Dmax)||Dmax<=Di){error.textContent='El diámetro máximo debe ser mayor que el mandril.';error.style.display='block';return;}
-   maxFisico=Math.floor(Math.PI*(Dmax**2-Di**2)/(4*(Av+S)*e));
-   if(!Number.isSafeInteger(maxFisico)||maxFisico<1){error.textContent='Con estos parámetros no cabe ninguna etiqueta dentro del Ø máximo.';error.style.display='block';return;}
-   etiquetas=mayorDivisor(total,Math.min(total,maxFisico));
-   rollos=total/etiquetas;
- }else{
-   if(!Number.isSafeInteger(nManual)||nManual<1){
-     error.textContent='Las etiquetas por rollo deben ser un número entero positivo.';error.style.display='block';return;
-   }
-   etiquetas=Math.min(nManual,total);
-   rollos=Math.ceil(total/etiquetas);
- }
- const Df=Math.sqrt(Di**2+(4*etiquetas*(Av+S)*e/Math.PI));
- const metros=(Av+S)*etiquetas/1000;
- document.getElementById('rEtiquetas').textContent=fmt0(etiquetas);
- document.getElementById('rRollos').textContent=fmt0(rollos);
- document.getElementById('rDiametro').textContent=fmt(Df)+' mm';
- document.getElementById('rMetros').textContent=fmt(metros)+' m';
- document.getElementById('tituloMax').textContent=hayDmax?'MÁX. ETIQUETAS POR Ø':'ETIQUETAS ÚLTIMO ROLLO';
- document.getElementById('rMax').textContent=hayDmax?fmt0(maxFisico):fmt0(total-(rollos-1)*etiquetas);
- const ultimoRollo=total-(rollos-1)*etiquetas;
- const producidas=(rollos-1)*etiquetas+ultimoRollo;
- document.getElementById('rProducidas').textContent=fmt0(producidas);
- document.getElementById('pedidoVerificado').hidden=producidas!==total;
- document.getElementById('rCaja').textContent='—';document.getElementById('rCajas').textContent='—';
- let nota='Selección de etiquetas: mayor divisor de la cantidad total que no supera el diámetro máximo. Embalaje calculado geométricamente, sin compresión forzada.';
- if(document.getElementById('anchoRollo').value.trim()!==''&&Number.isFinite(Ar)&&Ar>0){
-   const opciones=optimizarCajas(Df,Ar,rollos);
-   const viables=opciones.filter(o=>o.capacidad>0).sort((a,b)=>a.volumenTotal-b.volumenTotal||a.cajas-b.cajas||b.capacidad-a.capacidad);
-   const mejor=viables[0];mostrarComparacion(opciones,mejor);
-   mostrarSelectorCajas(opciones,mejor,seleccion=>{
-     document.getElementById('rCaja').textContent=fmt0(seleccion.capacidad);
-     document.getElementById('rCajas').textContent=fmt0(seleccion.cajas);
-     mostrarComparacion(opciones,seleccion);
-     embalajeParaVista=null;
-     document.getElementById('abrirVista').style.display='none';
-     if(seleccion.capacidad<=300&&Di<Df){
-       embalajeParaVista={L:seleccion.L,A:seleccion.A,H:seleccion.H,D:Df,Ar,Di,patron:seleccion.patron.nombre,capa:seleccion.patron.capa,nz:seleccion.capas,total:seleccion.capacidad};
-       document.getElementById('abrirVista').style.display='block';
-     }
-   });
- }else{nota+=' Introduce el ancho del rollo para obtener la recomendación de caja.';}
- document.getElementById('nota').textContent='';
-}
-window.addEventListener('error',()=>{const e=document.getElementById('error');e.textContent='Error de aplicación. Recarga la página y vuelve a intentarlo.';e.style.display='block';});
-if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js').catch(()=>{});
-</script>
-<script src="interfaz-v2.js?v=4" defer></script>
-<script src="cajas-selector.js?v=3" defer></script>
-</body>
-</html>
+<details id="detalleTecnico" class="detalle-tecnico" hidden><summary>Ver detalle del cálculo</summary><div id="contenidoTecnico"></div></details>
+<button id="abrirVista" class="vista-btn" type="button" hidden>◈ VISTA 3D</button>
+<button id="imprimirFicha" class="boton-secundario" type="button" hidden>IMPRIMIR FICHA</button>
+<section id="fichaImpresion" class="solo-impresion"></section>
+</section>
+<footer class="pie-app"><span id="estadoConexion">Revisión local · 2.0</span><span id="actualizacion" hidden>Nueva versión disponible <button id="actualizarApp" type="button">Actualizar</button></span></footer>
+</main>
+<div class="vista-overlay" id="overlayVista" hidden><div class="vista-dialogo" role="dialog" aria-modal="true" aria-labelledby="tituloVista"><div class="vista-cabecera"><h2 id="tituloVista">VISTA 3D · EMBALAJE</h2><button class="vista-close" id="cerrarVista" type="button" aria-label="Cerrar vista">×</button></div><div class="vista-opciones"><label for="tipoVista">Representación</label><select id="tipoVista"><option value="capacidad">Capacidad máxima de la caja</option><option value="ultima">Última caja del pedido</option></select><p>Esquema con el diámetro del rollo completo; no valida el cierre físico.</p></div><iframe id="visorOriginal" title="Distribución de rollos en la caja" src="about:blank"></iframe></div></div>
+</body></html>
