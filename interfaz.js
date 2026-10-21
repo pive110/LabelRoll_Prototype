@@ -27,7 +27,7 @@
  function invalidarPedido(texto='Datos modificados. Pulsa Calcular para actualizar.',nuevo='desactualizado'){
   cerrarVista();pedido=null;opciones=[];recomendada=null;seleccionada=null;ancho=null;
   resultados.forEach(id=>$(id).textContent='—');
-  ['pedidoVerificado','recomendacion','comparacion','detalleTecnico','abrirVista','imprimirFicha','nota'].forEach(id=>$(id).hidden=true);
+  ['planBobina','resumenCajas','pedidoVerificado','recomendacion','comparacion','detalleTecnico','abrirVista','imprimirFicha','nota'].forEach(id=>$(id).hidden=true);
   $('fichaImpresion').replaceChildren();$('error').hidden=true;
   mensajeEstado(texto,nuevo);
  }
@@ -61,8 +61,8 @@
   const p=pedido,o=seleccionada;
   const modo=p.modo==='iguales'?'Rollos iguales y pedido exacto':p.modo==='capacidad'?'Máximo aprovechamiento con último rollo parcial':'Etiquetas por rollo indicadas manualmente';
   let html='<p><b>Reparto:</b> '+modo+'. Último rollo: '+ent(p.ultimo)+' etiquetas · Ø '+fmt(p.Dultimo)+' mm.</p><p><b>Material:</b> avance '+fmt(p.Av)+' mm + separación '+fmt(p.S)+' mm · espesor '+fmt(p.e,5)+' mm · mandril '+fmt(p.Di)+' mm.</p>';
-  if(o)html+='<p><b>'+o.nombre+':</b> '+o.L+' × '+o.A+' × '+o.H+' mm · '+ent(o.patron.capa)+' rollos/capa × '+ent(o.capas)+' capas.</p><p><b>Hueco superior:</b> '+fmt(o.huecoSuperior)+' mm · '+ent(o.huecos)+' posiciones libres en el conjunto de cajas.</p>';
-  html+='<p><b>Criterio:</b> menor volumen total; en empate, menor número de cajas. Un único formato de caja por pedido, rollos verticales en cuadrícula y sin holgura añadida. No incluye coste, peso ni disponibilidad.</p>';
+  if(o)html+='<p><b>'+o.nombre+':</b> '+o.L+' × '+o.A+' × '+o.H+' mm · '+ent(o.patron.capa)+' rollos/capa × '+ent(o.capas)+' capas · patrón '+o.patron.nombre+'.</p><p><b>Hueco superior:</b> '+fmt(o.huecoSuperior)+' mm · '+ent(o.huecos)+' posiciones libres en el conjunto de cajas.</p>';
+  html+='<p><b>Criterio:</b> menor número de cajas; en empate, menor volumen total. Un único formato de caja por pedido, rollos verticales, comparando cuadrícula y patrón alternado en ambos sentidos, sin holgura añadida. Se elige el mejor patrón probado; no se garantiza el máximo de todas las disposiciones posibles. No incluye coste, peso ni disponibilidad.</p>';
   html+='<p>El check confirma el reparto previsto, no la cantidad realmente fabricada. La capacidad geométrica requiere comprobar las medidas interiores y el ajuste físico.</p>';
   if(o&&o.capacidad>300)html+='<p>La vista 3D admite hasta 300 rollos por caja.</p>';
   $('contenidoTecnico').innerHTML=html;$('detalleTecnico').hidden=false;
@@ -70,6 +70,9 @@
  function seleccionarCaja(o){
   if(!pedido)return;seleccionada=o;
   $('rCaja').textContent=ent(o.capacidad);$('rCajas').textContent=ent(o.cajas);
+  const incompleta=o.ultimos<o.capacidad,completas=o.cajas-(incompleta?1:0);
+  $('resumenCajas').textContent=incompleta?ent(completas)+' completas + 1 caja con '+ent(o.ultimos)+' '+(o.ultimos===1?'rollo':'rollos'):ent(completas)+' '+(completas===1?'caja completa':'cajas completas');
+  $('resumenCajas').hidden=false;
   mostrarComparacionCajas(opciones,recomendada,o);
   $('abrirVista').hidden=o.capacidad>300;detalle();
  }
@@ -97,7 +100,7 @@
  function enviarVista(){
   if(!pedido||!seleccionada||$('overlayVista').hidden)return;
   const o=seleccionada,total=$('tipoVista').value==='ultima'?o.ultimos:o.capacidad;
-  const datos={L:o.L,A:o.A,H:o.H,D:pedido.D,Ar:ancho,Di:pedido.Di,nx:o.patron.nx,ny:o.patron.ny,nz:o.capas,total,tipo:$('tipoVista').value};
+  const datos={L:o.L,A:o.A,H:o.H,D:pedido.D,Ar:ancho,Di:pedido.Di,centros:o.patron.centros,patron:o.patron.nombre,nz:o.capas,total,tipo:$('tipoVista').value};
   // Los archivos locales tienen origen opaco. El destinatario se limita al iframe propio.
   $('visorOriginal').contentWindow.postMessage({tipo:'LABEL_ROLL_VISTA',datos},location.protocol==='file:'?'*':location.origin);
  }
@@ -110,12 +113,14 @@
  function imprimir(){
   if(!pedido)return;
   const p=pedido,o=seleccionada;
-  const filas=[['Etiquetas solicitadas',ent(p.total)],['Etiquetas por rollo',ent(p.etiquetas)],['Rollos',ent(p.rollos)],['Etiquetas del último rollo',ent(p.ultimo)],['Diámetro teórico',fmt(p.D)+' mm'],['Metros por rollo completo',fmt(p.metros)+' m'],['Mandril',fmt(p.Di)+' mm'],['Avance / separación',fmt(p.Av)+' / '+fmt(p.S)+' mm'],['Espesor',fmt(p.e,5)+' mm'],['Ancho',ancho?fmt(ancho)+' mm':'Sin calcular'],['Caja seleccionada',o?o.nombre:'Sin embalaje calculado'],['Número de cajas',o?ent(o.cajas):'—'],['Rollos de la última caja',o?ent(o.ultimos):'—']];
+  const filas=[['Etiquetas solicitadas',ent(p.total)],['Etiquetas por rollo',ent(p.etiquetas)],['Rollos',ent(p.rollos)],['Etiquetas del último rollo',ent(p.ultimo)],['Diámetro teórico',fmt(p.D)+' mm'],['Metros por rollo completo',fmt(p.metros)+' m'],['Mandril',fmt(p.Di)+' mm'],['Avance / separación',fmt(p.Av)+' / '+fmt(p.S)+' mm'],['Espesor',fmt(p.e,5)+' mm'],['Ancho',ancho?fmt(ancho)+' mm':'Sin calcular'],['Caja seleccionada',o?o.nombre:'Sin embalaje calculado'],['Disposición',o?o.patron.nombre+' · '+ent(o.patron.capa)+' rollos/capa × '+ent(o.capas)+' capas':'—'],['Número de cajas',o?ent(o.cajas):'—'],['Rollos de la última caja',o?ent(o.ultimos):'—']];
   $('fichaImpresion').innerHTML='<h2>Ficha de producción · planificación</h2><p>'+new Date().toLocaleDateString('es-ES')+'</p><table>'+filas.map(([k,v])=>'<tr><th scope="row">'+k+'</th><td>'+v+'</td></tr>').join('')+'</table><p>Cálculo geométrico sin holguras añadidas. Confirmar el ajuste físico de las cajas.</p>';
   window.print();
  }
  function aplicarTema(oscuro){
   document.body.classList.toggle('theme-dark',oscuro);$('cambiarTema').setAttribute('aria-pressed',String(oscuro));
+  const etiquetaTema=oscuro?'Activar modo claro':'Activar modo oscuro';
+  $('cambiarTema').setAttribute('aria-label',etiquetaTema);$('cambiarTema').title=etiquetaTema;
   document.querySelector('meta[name="theme-color"]').content=oscuro?'#19191b':'#f2f3f5';
   try{localStorage.setItem('labelroll-tema',oscuro?'oscuro':'claro')}catch(_){/* Preferencia opcional. */}
  }
@@ -143,7 +148,12 @@
  $('espesorRapido').addEventListener('toggle',()=>{$('toggleEspesor').setAttribute('aria-expanded',String($('espesorRapido').open));});
  $('calcularMuestra').addEventListener('click',calcularMuestra);$('usarMuestra').addEventListener('click',usarMuestra);$('calcularEmbalaje').addEventListener('click',calcular);
  $('abrirVista').addEventListener('click',abrirVista);$('cerrarVista').addEventListener('click',cerrarVista);$('tipoVista').addEventListener('change',enviarVista);$('visorOriginal').addEventListener('load',enviarVista);
- $('imprimirFicha').addEventListener('click',imprimir);$('cambiarTema').addEventListener('click',()=>aplicarTema(!document.body.classList.contains('theme-dark')));
+ $('imprimirFicha').addEventListener('click',imprimir);let giroTema=0;
+ $('cambiarTema').addEventListener('click',()=>{
+  giroTema+=360;
+  $('cambiarTema').querySelector('.bobina-giro').style.transform='rotate('+giroTema+'deg)';
+  aplicarTema(!document.body.classList.contains('theme-dark'));
+ });
  document.addEventListener('keydown',event=>{
   if($('overlayVista').hidden)return;
   if(event.key==='Escape'){event.preventDefault();cerrarVista();}
@@ -157,11 +167,11 @@
   if(event.data?.tipo==='LABEL_ROLL_FOCUS_PREVIOUS')$('tipoVista').focus();
  });
  function conexion(){
-  $('estadoConexion').textContent=location.protocol==='file:'?'Label Roll · 2.0.0 · local':navigator.onLine?'Label Roll · 2.0.0':'Sin conexión · los cálculos siguen disponibles';
+  $('estadoConexion').textContent=location.protocol==='file:'?'Label Roll Calculator':navigator.onLine?'Label Roll Calculator':'Sin conexión · los cálculos siguen disponibles';
  }
  window.addEventListener('online',conexion);window.addEventListener('offline',conexion);conexion();
  let saved;try{saved=localStorage.getItem('labelroll-tema')}catch(_){}aplicarTema(saved!=='claro');sincronizarModo();
- if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol)){
+ if('serviceWorker' in navigator && location.protocol!=='file:'){
   let registro,actualizando=false;
   const avisar=()=>{if(registro?.waiting)$('actualizacion').hidden=false;};
   navigator.serviceWorker.register('./service-worker.js').then(r=>{

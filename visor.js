@@ -143,18 +143,24 @@ $('reset').addEventListener('click',reset);
 // Única fuente: resultados recibidos de Label Roll Calculator.
 // Sin llamada inicial a calculate(): no hay recálculo de embalaje.
 function cargarResultado(d){
- if(!d || ![d.L,d.A,d.H,d.D,d.Ar,d.Di,d.nx,d.ny,d.nz,d.total].every(Number.isFinite))return;
- const {L,A,H,D,Ar,Di,nx,ny,nz,total}=d;
+ if(!d || ![d.L,d.A,d.H,d.D,d.Ar,d.Di,d.nz,d.total].every(Number.isFinite))return;
+ const {L,A,H,D,Ar,Di,nz,total}=d;
+ const centros=d.centros;
+ if(!Array.isArray(centros)||!centros.length||centros.length>MAX_ROLLS)return;
+ const capa=centros.length;
  if([L,A,H,D,Ar,Di].some(v=>v<=0) || Di>=D ||
-    [nx,ny,nz,total].some(v=>!Number.isSafeInteger(v)||v<0) ||
-    total<1 || total>nx*ny*nz || nx*ny*nz>MAX_ROLLS || nx*D>L+1e-8 || ny*D>A+1e-8 || nz*Ar>H+1e-8)return;
+    [nz,total].some(v=>!Number.isSafeInteger(v)||v<0) ||
+    total<1 || total>capa*nz || capa*nz>MAX_ROLLS || nz*Ar>H+1e-8)return;
+ for(let i=0;i<capa;i++){
+  const p=centros[i];
+  if(!p||![p.x,p.y].every(Number.isFinite)||p.x<D/2-1e-8||p.x>L-D/2+1e-8||p.y<D/2-1e-8||p.y>A-D/2+1e-8)return;
+  for(let j=0;j<i;j++)if(Math.hypot(p.x-centros[j].x,p.y-centros[j].y)<D-1e-8)return;
+ }
  box={L,W:A,H};roll={D,width:Ar,core:Di};
- counts={nx,ny,nz};positions=[];
- // Coordenadas de los rollos recibidos: nx, ny y nz proceden de la calculadora.
- // La vista solo construye las posiciones gráficas.
- const mx=(L-nx*D)/2,my=(A-ny*D)/2;
- for(let k=0;k<nz;k++)for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
-   if(positions.length<total)positions.push({x:mx+D/2+i*D,y:my+D/2+j*D,z:k*Ar,k});
+ counts={capa,nz};positions=[];
+ // Usa exactamente los centros calculados; conserva el patrón alternado.
+ for(let k=0;k<nz;k++)for(const p of centros){
+   if(positions.length<total)positions.push({x:p.x,y:p.y,z:k*Ar,k});
  }
  FILL_END=positions.length?(positions.length-1)*STAGGER+DURATION:0;
  SHORT_START=FILL_END+HOLD;LONG_START=SHORT_START+SHORT_TIME;
@@ -165,11 +171,11 @@ function cargarResultado(d){
  $('diam').textContent=fmt(D)+' mm';
  $('rollwidth').textContent=fmt(Ar)+' mm';
  $('mandril').textContent=fmt(Di)+' mm';
- $('distribution').textContent=`${nx} × ${ny} posiciones · ${Math.ceil(total/(nx*ny))} capas usadas`;
+ $('distribution').textContent=`${d.patron==='Alternado'?'Alternado':'Cuadrícula'} · ${capa} rollos/capa · ${Math.ceil(total/capa)} capas usadas`;
  $('viewKind').textContent=d.tipo==='ultima'?'ÚLTIMA CAJA':'CAPACIDAD MÁXIMA';
  $('usableHeight').textContent=fmt(H)+' mm (según calculadora)';
  $('legend').replaceChildren();
- for(let i=0;i<Math.ceil(total/(nx*ny));i++){
+ for(let i=0;i<Math.ceil(total/capa);i++){
    const div=document.createElement('div');div.className='legend-item';
    const s=document.createElement('span');s.className='swatch';s.style.background=colors[i%colors.length];
    const t=document.createElement('span');t.textContent=`Capa ${i+1}`;div.append(s,t);$('legend').append(div);

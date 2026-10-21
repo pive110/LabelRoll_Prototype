@@ -26,6 +26,6 @@ function mostrarComparacionCajas(opciones,recomendada,seleccionada){
  const tabla=document.getElementById('comparacion');tabla.hidden=false;
  tabla.innerHTML='<table><caption class="sr-only">Comparación de cajas; estrella: recomendada, check: seleccionada</caption><thead><tr><th scope="col">Caja</th><th scope="col">Rollos/caja</th><th scope="col">Cajas</th><th scope="col">Disposición</th></tr></thead><tbody>'+opciones.map(o=>{
   const elegida=o.id===seleccionada?.id,mejor=o.id===recomendada?.id;
-  return '<tr class="'+(elegida?'seleccionada':'')+'"><th scope="row">'+o.nombre+(mejor?'<span class="marca-tabla">★ Recomendada</span>':'')+(elegida?'<span class="marca-tabla">✓ Seleccionada</span>':'')+'</th><td>'+ (o.capacidad?o.capacidad.toLocaleString('es-ES'):'No cabe')+'</td><td>'+(o.capacidad?o.cajas.toLocaleString('es-ES'):'—')+'</td><td>'+(o.capacidad?'Cuadrícula':'—')+'</td></tr>';
+  return '<tr class="'+(elegida?'seleccionada':'')+'"><th scope="row">'+o.nombre+(mejor?'<span class="marca-tabla">★ Recomendada</span>':'')+(elegida?'<span class="marca-tabla">✓ Seleccionada</span>':'')+'</th><td>'+ (o.capacidad?o.capacidad.toLocaleString('es-ES'):'No cabe')+'</td><td>'+(o.capacidad?o.cajas.toLocaleString('es-ES'):'—')+'</td><td>'+(o.capacidad?o.patron.nombre+' · '+o.patron.capa+'/capa × '+o.capas+' capas<small class="comparacion-patrones">Cuadrícula: '+o.patron.comparacion.cuadricula+'/capa<br>Alternado: '+o.patron.comparacion.alternado+'/capa</small>':'—')+'</td></tr>';
  }).join('')+'</tbody></table>';
 }

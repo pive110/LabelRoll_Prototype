@@ -31,10 +31,16 @@ pnpm build
 
 ## Cálculo y alcance
 
-El check confirma el total planificado. Con diámetro máximo se puede elegir reparto exacto con rollos iguales o último rollo parcial. El embalaje minimiza el volumen total, con menor número de cajas en empate, en cuadrícula vertical sin holgura añadida. Las medidas interiores y el ajuste físico deben validarse en producción.
+El check confirma el total planificado. Con diámetro máximo se puede elegir reparto exacto con rollos iguales o último rollo parcial. El embalaje compara cuadrícula y patrones alternados, incluido paso ampliado. Recomienda menos cajas y, en empate, menor volumen total; conserva cuadrícula en empates de capacidad. No es una búsqueda exhaustiva del máximo. Las medidas interiores y el ajuste físico deben validarse en producción.
 
 ## Versiones y recuperación
 
 La versión 2.0.0 incorpora las correcciones de auditoría, interfaz y nuevo logo. La etiqueta `backup/pre-2.0.0-2026-10-17` conserva la versión publicada anterior. Para recuperarla conservando el historial, crear una rama desde esa etiqueta y tramitar su restauración en `main`; no hace falta borrar ni forzar el historial.
 
 Los iconos instalados en dispositivos pueden necesitar que el navegador actualice su caché o que se vuelva a crear el acceso directo.
+
+## Versión 2.1
+
+Inicio con parada de máquina, preparación de rollos y embalaje, margen de desperdicio y comprobación de bobina restante. Datos comunes sincronizados, botón Nuevo trabajo, logo como control de tema y formularios adaptados a móvil. El cálculo de bobina restante excluye la preparación según su diámetro exterior; los metros estimados requieren el espesor total del material con soporte.
+
+N1 de un corte: 390 × 290 × 250 mm; Ø111 → 8 rollos/capa y Ø135 → 5 rollos/capa. La última caja incompleta se incluye en las cajas totales necesarias.

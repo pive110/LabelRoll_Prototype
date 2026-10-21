@@ -1,0 +1,89 @@
+.calculadora{max-width:900px}.entrada-app{display:none}.local-badge{font-size:11px;letter-spacing:.12em;color:var(--muted);margin:20px 0 8px}.inicio-titulo{font-size:28px;letter-spacing:-.04em;margin:0}.inicio-texto{color:var(--muted);margin:8px 0 28px}.accesos{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0 36px}.acceso{margin:0;padding:30px 24px;min-height:250px;background:var(--input);color:var(--ink);border:1px solid var(--line);text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:12px;letter-spacing:0}.acceso:hover{border-color:var(--red)}.acceso svg{width:76px;height:76px;color:var(--red)}.acceso strong{font-size:23px;line-height:1.2}.acceso span{font-size:14px;color:var(--muted);font-weight:400}.acceso .acceso-ir{margin-top:auto;padding-top:12px;color:var(--ink);font-weight:600}.volver{background:transparent;color:var(--muted);width:auto;border:1px solid var(--line);padding:8px 14px;margin:18px 0}.pantalla h2{font-size:26px;margin:4px 0}.pantalla .intro{color:var(--muted);font-size:14px}.esquema{width:100%;height:210px;background:var(--input);border:1px solid var(--line);border-radius:14px;margin:18px 0;color:var(--ink)}.esquema text{font-family:inherit;fill:currentColor;font-size:13px}.bobina-medidas .campo{margin-top:15px}.bobina-medidas label{font-size:14px}.paso-seccion{font-size:12px;font-weight:700;letter-spacing:.07em;color:var(--muted);margin-top:24px}.salida-bobina{margin:22px 0;padding:20px;background:var(--result);border-radius:14px;border:1px solid var(--line)}.salida-bobina .numero{font-size:32px}.salida-bobina .result-grid{margin:14px 0}.salida-bobina p{font-size:13px;color:var(--muted)}.secundario{background:transparent;color:var(--ink);border:1px solid var(--line)}.ejemplo{width:auto;font-size:12px;margin-top:6px;background:transparent;color:var(--muted);padding:6px 0;text-decoration:underline}.traspaso{padding:12px 15px;border-left:3px solid var(--red);background:var(--result);border-radius:6px;font-size:13px}.opciones-extra{margin-top:18px}.opciones-extra>summary{font-size:13px;cursor:pointer;color:var(--muted)}.opciones-extra .espesor-rapido>summary{display:none}#toggleEspesor{display:none}.pie-app{margin-top:26px}.pantalla:focus{outline:none}
+@media(max-width:560px){.calculadora{padding:18px}.accesos{grid-template-columns:1fr;gap:12px}.acceso{min-height:190px;padding:22px}.acceso svg{width:58px;height:58px}.acceso strong{font-size:21px}.inicio-titulo{font-size:25px}.esquema{height:185px}.salida-bobina{padding:14px}.salida-bobina .numero{font-size:26px}}
+@media print{#inicio,.volver,.local-badge{display:none!important}}
+.calculadora{display:block} @media print{#pantallaRollos{display:block!important}#pantallaRollos>*:not(.resultado){display:none!important}}
+
+/* La calculadora de espesor es una sección completa del formulario. */
+#datosPedido>.opciones-extra{grid-column:1/-1;min-width:0;width:100%;margin-top:18px}
+.opciones-extra>summary{padding:12px 14px;min-height:48px;line-height:1.5;border:1px solid var(--line);border-radius:10px;background:var(--input);color:var(--ink);font-weight:600;overflow-wrap:anywhere}
+.opciones-extra[open]>summary{border-radius:10px 10px 0 0}
+.opciones-extra .espesor-rapido{margin-top:0;border-top:0;border-radius:0 0 10px 10px;min-width:0}
+.opciones-extra .espesor-cuerpo{padding:18px;min-width:0}
+.espesor-cuerpo>p:first-child{margin:0 0 12px;font-size:13px}
+.espesor-cuerpo label,.espesor-cuerpo .unidad{overflow-wrap:anywhere}
+.espesor-cuerpo button{line-height:1.5;white-space:normal;overflow-wrap:anywhere}
+.espesor-resultado strong{display:block;margin:6px 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+@media(max-width:600px){
+ .opciones-extra .espesor-cuerpo{padding:14px}
+ .espesor-cuerpo>.grid{grid-template-columns:minmax(0,1fr);gap:14px}
+ .espesor-cuerpo>.grid .campo{margin-top:0}
+ .espesor-cuerpo label{font-size:14px;line-height:1.45}
+ .espesor-cuerpo input{font-size:16px;min-height:48px}
+ .espesor-cuerpo button{min-height:48px;padding:12px;font-size:13px;letter-spacing:0}
+ .espesor-resultado{padding:12px}
+ .espesor-resultado strong{font-size:24px;line-height:1.3}
+}
+.marca-simbolo{background:transparent;border-radius:10px}.marca-simbolo img{border-radius:10px}
+
+/* La medida activa acompaña al campo sin alterar la geometría de referencia. */
+#esquemaParada{height:auto;display:block;min-height:170px}
+.medida-esquema{color:var(--muted);transition:color .2s ease}
+.trazo-medida{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.esquema .valor-esquema{font-size:11px;opacity:.8}
+.aro-parada{fill:none;stroke:currentColor;stroke-width:2;stroke-dasharray:5.149 5.149;stroke-linecap:butt;opacity:.65}
+.medida-esquema.activa{color:var(--focus)}
+.medida-esquema.activa>text:first-of-type{font-weight:700}
+.medida-esquema.activa .trazo-medida,.medida-esquema.activa circle{animation:medida-pulso .7s ease-in-out 2}
+.medida-esquema.activa .aro-parada{opacity:1;stroke-width:3}
+@keyframes medida-pulso{0%,100%{stroke-width:2}50%{stroke-width:4;filter:drop-shadow(0 0 3px currentColor)}}
+.bobina-medidas input:focus,#margenParada:focus{outline:2px solid var(--focus);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.medida-esquema{transition:none}.medida-esquema.activa .trazo-medida,.medida-esquema.activa circle{animation:none}}
+
+.comparacion-patrones{display:block;margin-top:7px;color:var(--muted);font-size:11px;font-weight:400;line-height:1.5}
+
+
+.aclaracion-cajas{margin-top:7px;color:var(--muted);font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+
+.barra-tirada{display:flex;height:18px;margin:20px 0 10px;border-radius:9px;overflow:hidden;background:var(--focus);border:1px solid var(--line)}.barra-tirada span{display:block;background:var(--muted);height:100%}#resultadoDesperdicio h3{margin-top:0}#resultadoDesperdicio .numero{overflow-wrap:anywhere}
+
+.continuar-pedido{margin-top:24px;border-top:1px solid var(--line);padding-top:20px}.continuar-pedido>summary{cursor:pointer;font-size:20px;font-weight:700;padding:10px 0;min-height:44px}
+
+.inicio-herramientas{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px}.inicio-herramientas .local-badge{margin:0}.nuevo-trabajo{display:inline-flex;align-items:center;gap:7px;width:auto;margin:0;padding:8px 12px;background:transparent;color:var(--ink);border:1px solid var(--line);font-size:12px;min-height:44px;letter-spacing:0}.nuevo-trabajo span{font-size:23px;line-height:1}.inicio-herramientas+.sr-only+h2{margin-top:12px}
+
+.nuevo-trabajo.con-datos{background:var(--red);border-color:var(--red);color:#fff}
+
+/* Formularios: ayudas amplias en escritorio y una lectura compacta en móvil. */
+.unidad-label{font-size:.9em;font-weight:400;color:var(--muted);white-space:nowrap}
+@media(min-width:601px){
+ .pantalla .grid{column-gap:20px;align-items:start}
+ .pantalla .grid>.campo>label,.pantalla .grid>.campo>.campo-label-accion{min-height:38px;display:flex;align-items:flex-end;margin-bottom:8px}
+ .pantalla .grid>.campo>.campo-label-accion>label{margin:0}
+ .pantalla .grid>.campo>.unidad{max-width:55ch;line-height:1.5}
+}
+@media(max-width:600px){
+ .pantalla .grid,.espesor-cuerpo>.grid{grid-template-columns:minmax(0,1fr);gap:16px}
+ .pantalla .grid>.campo,.bobina-medidas .campo{margin-top:0}
+ .pantalla .grid{margin-top:18px}
+ .pantalla label{font-size:14px;line-height:1.4;margin-bottom:7px}
+ .pantalla input,.pantalla select{min-height:48px;font-size:16px;padding:12px;border-radius:9px}
+ .pantalla>.intro,.pantalla>p.unidad,.espesor-cuerpo>p:first-child{display:none}
+ /* Les siguen disponibles las descripciones a los lectores de pantalla. */
+ .pantalla .campo>.unidad,.pantalla .campo>.ayuda,#ayudaModo{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
+ }
+ .pantalla h2{font-size:23px;line-height:1.2}
+ .pantalla .seccion{font-size:12px;line-height:1.4;margin-top:24px}
+ .pantalla button[type=submit],#calcularBobina,#calcularEmbalaje{min-height:48px;margin-top:20px}
+ .resultado{margin-top:20px;padding:14px}
+ .salida-bobina{padding:14px}
+ .result-grid{gap:10px;align-items:stretch}
+ .result-grid .card{padding:12px;display:flex;flex-direction:column}
+ .result-grid .titulo{font-size:11px;line-height:1.4}
+ .result-grid .numero{font-size:25px;line-height:1.2}
+ .salida-bobina .numero{font-size:25px}
+ .inicio-herramientas{align-items:center;gap:8px}
+ .inicio-herramientas .local-badge{font-size:9px;letter-spacing:.05em}
+}
+
+.pantalla label .unidad-label{margin-left:4px}
+

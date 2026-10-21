@@ -47,18 +47,65 @@
   if(!Number.isFinite(e)||e<=0||Number(e.toFixed(8))<=0)throw new ErrorDato('muestraDiametro','No se puede obtener un espesor válido con estas medidas.');
   return e;
  }
+ // Patrones regulares comprobables; no es una búsqueda del máximo absoluto.
+ // Los centros sirven tanto al cálculo como al visor, sin reconstruir cuadrículas.
+ function patronBase(L,A,D){
+  const eps=1e-9,ajuste=n=>Math.max(0,Math.floor(n+eps));
+  const nx=ajuste(L/D),ny=ajuste(A/D);
+  let alternado=0;
+  let mejor={nombre:'Cuadrícula',nx,ny,capa:nx*ny,tipo:'cuadricula'};
+  for(const girado of [false,true])for(const fase of [0,1]){
+   const ancho=girado?A:L,alto=girado?L:A,paso=D*Math.sqrt(3)/2;
+   const filas=alto+eps<D?0:ajuste((alto-D)/paso)+1;
+   const completas=ajuste(ancho/D),desplazadas=ajuste((ancho-D/2)/D);
+   const pares=Math.ceil(filas/2),impares=Math.floor(filas/2);
+   const capa=pares*(fase?desplazadas:completas)+impares*(fase?completas:desplazadas);
+   alternado=Math.max(alternado,capa);
+   if(capa>mejor.capa)mejor={nombre:'Alternado',tipo:'alternado',capa,filas,completas,desplazadas,fase,girado,paso,nx:completas,ny:filas};
+  }
+  // Abrir el paso horizontal permite acercar las filas sin solapar los rollos.
+  for(const girado of [false,true])for(const fase of [0,1]){
+   const ancho=girado?A:L,alto=girado?L:A,completas=ajuste(ancho/D);
+   if(completas<2)continue;
+   const pasoX=Math.min(D*Math.sqrt(3),(ancho-D)/(completas-1));
+   if(pasoX<=D+eps)continue;
+   const paso=Math.sqrt(Math.max(0,D*D-pasoX*pasoX/4));
+   const filas=alto+eps<D?0:ajuste((alto-D)/paso)+1,desplazadas=completas-1;
+   const capa=Math.ceil(filas/2)*(fase?desplazadas:completas)+Math.floor(filas/2)*(fase?completas:desplazadas);
+   alternado=Math.max(alternado,capa);
+   if(capa>mejor.capa)mejor={nombre:'Alternado',tipo:'alternado',capa,filas,completas,desplazadas,fase,girado,paso,pasoX,nx:completas,ny:filas};
+  }
+  if(!Number.isSafeInteger(mejor.capa))throw new ErrorDato('anchoRollo','La capacidad calculada es demasiado grande. Revisa el ancho y el diámetro del rollo.');
+  const centros=[];
+  if(mejor.capa>0&&mejor.capa<=300){
+   if(mejor.tipo==='cuadricula'){
+    for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)centros.push({x:D/2+i*D,y:D/2+j*D});
+   }else for(let j=0;j<mejor.filas;j++){
+    const desplazada=(j+mejor.fase)%2,n=desplazada?mejor.desplazadas:mejor.completas;
+    for(let i=0;i<n;i++){
+     const pasoX=mejor.pasoX||D;
+     const x=D/2+i*pasoX+desplazada*pasoX/2,y=D/2+j*mejor.paso;
+     centros.push(mejor.girado?{x:y,y:x}:{x,y});
+    }
+   }
+   const minX=Math.min(...centros.map(p=>p.x)),maxX=Math.max(...centros.map(p=>p.x));
+   const minY=Math.min(...centros.map(p=>p.y)),maxY=Math.max(...centros.map(p=>p.y));
+   for(const p of centros){p.x+=(L-minX-maxX)/2;p.y+=(A-minY-maxY)/2;}
+  }
+  return {...mejor,centros,comparacion:{cuadricula:nx*ny,alternado}};
+ }
  function optimizarCajas(D,Ar,rollos){
   if(![D,Ar].every(n=>Number.isFinite(n)&&n>0)||!Number.isSafeInteger(rollos)||rollos<=0)throw new ErrorDato('anchoRollo','Las dimensiones o la cantidad de rollos no son válidas.');
   return CAJAS.map(caja=>{
-   const nx=Math.floor((caja.L+1e-9)/D),ny=Math.floor((caja.A+1e-9)/D),capas=Math.floor((caja.H+1e-9)/Ar),capa=nx*ny,capacidad=capa*capas;
+   const patron=patronBase(caja.L,caja.A,D),capas=Math.floor((caja.H+1e-9)/Ar),capacidad=patron.capa*capas;
    if(!Number.isSafeInteger(capacidad))throw new ErrorDato('anchoRollo','La capacidad calculada es demasiado grande. Revisa el ancho y el diámetro del rollo.');
    const cajas=capacidad?Math.ceil(rollos/capacidad):0,volumenTotal=cajas*caja.L*caja.A*caja.H;
    if(!Number.isFinite(volumenTotal))throw new ErrorDato('anchoRollo','El volumen calculado está fuera de rango.');
-   return {...caja,patron:{nombre:'Cuadrícula',nx,ny,capa},capas,capacidad,cajas,volumenTotal,ultimos:capacidad?rollos-(cajas-1)*capacidad:0,huecos:capacidad?cajas*capacidad-rollos:0,huecoSuperior:capacidad?caja.H-capas*Ar:0};
+   return {...caja,patron,capas,capacidad,cajas,volumenTotal,ultimos:capacidad?rollos-(cajas-1)*capacidad:0,huecos:capacidad?cajas*capacidad-rollos:0,huecoSuperior:capacidad?caja.H-capas*Ar:0};
   });
  }
- function recomendar(opciones,criterio='volumen'){
+ function recomendar(opciones,criterio='cajas'){
   return opciones.filter(o=>o.capacidad>0).sort((a,b)=>criterio==='cajas'?(a.cajas-b.cajas||a.volumenTotal-b.volumenTotal||a.cortes-b.cortes):(a.volumenTotal-b.volumenTotal||a.cajas-b.cajas||b.capacidad-a.capacidad))[0]||null;
  }
- return Object.freeze({ErrorDato,numero,mayorDivisor,diametro,calcularPedido,calcularEspesor,optimizarCajas,recomendar});
+ return Object.freeze({ErrorDato,numero,mayorDivisor,diametro,calcularPedido,calcularEspesor,patronBase,optimizarCajas,recomendar});
 });
