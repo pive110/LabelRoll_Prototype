@@ -1,4 +1,4 @@
-/* Cálculo independiente del diámetro de parada. */
+/* Prototipo local: cálculo independiente del diámetro de parada. */
 (function(root){
  'use strict';
  const C=typeof module==='object'&&module.exports?require('./calculos.js'):root.LabelRollCalculos;
@@ -18,8 +18,6 @@
  }
  $('irBobina').addEventListener('click',()=>navegar('pantallaBobina'));
  $('irRollos').addEventListener('click',()=>navegar('pantallaRollos'));
- const extra=document.querySelector('.opciones-extra');
- extra.addEventListener('toggle',()=>{if(extra.open)$('espesorRapido').open=true;});
  document.querySelectorAll('[data-inicio]').forEach(el=>el.addEventListener('click',()=>{navegar('inicio');$('irBobina').focus();}));
  function limpiar(){
   $('resultadoBobina').hidden=true;$('errorBobina').hidden=true;

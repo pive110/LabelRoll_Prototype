@@ -54,7 +54,7 @@
   }
   $('espesor').value=Number(muestra.valor.toFixed(8)).toString().replace('.',',');
   limpiarError('espesor');invalidarPedido('Espesor actualizado. Pulsa Calcular para actualizar el pedido.');
-  $('espesorRapido').open=false;$('toggleEspesor').setAttribute('aria-expanded','false');$('espesor').focus();
+  $('espesorRapido').open=false;$('dialogoEspesor').close();$('toggleEspesor').setAttribute('aria-expanded','false');$('espesor').focus();
  }
  function detalle(){
   if(!pedido)return;
@@ -98,6 +98,7 @@
   detalle();
  }
  function enviarVista(){
+  document.querySelectorAll('[data-tipo-vista]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tipoVista===$('tipoVista').value)));
   if(!pedido||!seleccionada||$('overlayVista').hidden)return;
   const o=seleccionada,total=$('tipoVista').value==='ultima'?o.ultimos:o.capacidad;
   const datos={L:o.L,A:o.A,H:o.H,D:pedido.D,Ar:ancho,Di:pedido.Di,centros:o.patron.centros,patron:o.patron.nombre,nz:o.capas,total,tipo:$('tipoVista').value};
@@ -108,6 +109,7 @@
   if(!pedido||!seleccionada||seleccionada.capacidad>300)return;
   focoAnterior=document.activeElement;$('overlayVista').hidden=false;$('calculadora').inert=true;document.body.classList.add('vista-abierta');
   $('tipoVista').value=pedido.rollos<seleccionada.capacidad?'ultima':'capacidad';
+  document.querySelectorAll('[data-tipo-vista]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tipoVista===$('tipoVista').value)));
   $('visorOriginal').src='./visor-3d.html';$('cerrarVista').focus();
  }
  function imprimir(){
@@ -119,6 +121,7 @@
  }
  function aplicarTema(oscuro){
   document.body.classList.toggle('theme-dark',oscuro);$('cambiarTema').setAttribute('aria-pressed',String(oscuro));
+  $('cambiarTema').querySelector('.bobina-giro').style.transform='rotate('+(oscuro?0:180)+'deg)';
   const etiquetaTema=oscuro?'Activar modo claro':'Activar modo oscuro';
   $('cambiarTema').setAttribute('aria-label',etiquetaTema);$('cambiarTema').title=etiquetaTema;
   document.querySelector('meta[name="theme-color"]').content=oscuro?'#19191b':'#f2f3f5';
@@ -135,23 +138,27 @@
   const inicio=input.selectionStart,fin=input.selectionEnd;
   if(input.value.includes('.')){input.value=input.value.replaceAll('.',',');if(inicio!==null)input.setSelectionRange(inicio,fin);}
  }));
- $('datosPedido').addEventListener('keydown',event=>{
+ $('calculadora').addEventListener('keydown',event=>{
   if(event.key!=='Enter'||event.isComposing||event.ctrlKey||event.altKey||event.metaKey||event.shiftKey||event.target.tagName!=='INPUT')return;
   const enMuestra=event.target.closest('#espesorRapido');
-  const visibles=Array.from((enMuestra||$('datosPedido')).querySelectorAll('input')).filter(input=>!input.disabled&&input.getClientRects().length&& (enMuestra||!input.closest('#espesorRapido')));
-  const i=visibles.indexOf(event.target);if(i<0)return;event.preventDefault();(visibles[i+1]||$(enMuestra?'calcularMuestra':'calcularEmbalaje')).focus();
+  const contenedor=enMuestra||event.target.closest('.pantalla');if(!contenedor)return;
+  const visibles=Array.from(contenedor.querySelectorAll('input,select')).filter(input=>!input.disabled&&input.getClientRects().length&&(enMuestra||!input.closest('#espesorRapido')));
+  const i=visibles.indexOf(event.target);if(i<0)return;event.preventDefault();
+  const boton=enMuestra?$('calcularMuestra'):contenedor.id==='pantallaRollos'?$('calcularEmbalaje'):contenedor.querySelector('button[type="submit"],#calcularBobina');
+  (visibles[i+1]||boton)?.focus();
  });
  $('toggleEspesor').addEventListener('click',()=>{
-  const panel=$('espesorRapido');panel.open=!panel.open;$('toggleEspesor').setAttribute('aria-expanded',String(panel.open));
-  if(panel.open)$('muestraDiametro').focus();
+  $('espesorRapido').open=true;$('dialogoEspesor').showModal();
+  $('toggleEspesor').setAttribute('aria-expanded','true');document.body.classList.add('espesor-abierto');
+  $('muestraDiametro').focus();
  });
- $('espesorRapido').addEventListener('toggle',()=>{$('toggleEspesor').setAttribute('aria-expanded',String($('espesorRapido').open));});
+ $('cerrarEspesor').addEventListener('click',()=>$('dialogoEspesor').close());
+ $('dialogoEspesor').addEventListener('close',()=>{document.body.classList.remove('espesor-abierto');$('toggleEspesor').setAttribute('aria-expanded','false');});
  $('calcularMuestra').addEventListener('click',calcularMuestra);$('usarMuestra').addEventListener('click',usarMuestra);$('calcularEmbalaje').addEventListener('click',calcular);
  $('abrirVista').addEventListener('click',abrirVista);$('cerrarVista').addEventListener('click',cerrarVista);$('tipoVista').addEventListener('change',enviarVista);$('visorOriginal').addEventListener('load',enviarVista);
- $('imprimirFicha').addEventListener('click',imprimir);let giroTema=0;
+ document.querySelectorAll('[data-tipo-vista]').forEach(b=>b.addEventListener('click',()=>{$('tipoVista').value=b.dataset.tipoVista;enviarVista();}));
+ $('imprimirFicha').addEventListener('click',imprimir);
  $('cambiarTema').addEventListener('click',()=>{
-  giroTema+=360;
-  $('cambiarTema').querySelector('.bobina-giro').style.transform='rotate('+giroTema+'deg)';
   aplicarTema(!document.body.classList.contains('theme-dark'));
  });
  document.addEventListener('keydown',event=>{
@@ -164,7 +171,7 @@
   if(location.protocol!=='file:'&&event.origin!==location.origin)return;
   if(event.data?.tipo==='LABEL_ROLL_CLOSE')cerrarVista();
   if(event.data?.tipo==='LABEL_ROLL_FOCUS_NEXT')$('cerrarVista').focus();
-  if(event.data?.tipo==='LABEL_ROLL_FOCUS_PREVIOUS')$('tipoVista').focus();
+  if(event.data?.tipo==='LABEL_ROLL_FOCUS_PREVIOUS')document.querySelector('[data-tipo-vista="ultima"]').focus();
  });
  function conexion(){
   $('estadoConexion').textContent=location.protocol==='file:'?'Label Roll Calculator':navigator.onLine?'Label Roll Calculator':'Sin conexión · los cálculos siguen disponibles';
@@ -176,7 +183,7 @@
   const avisar=()=>{if(registro?.waiting)$('actualizacion').hidden=false;};
   navigator.serviceWorker.register('./service-worker.js').then(r=>{
    registro=r;avisar();r.addEventListener('updatefound',()=>{const worker=r.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed')avisar();});});
-  }).catch(()=>{$('estadoConexion').textContent='Label Roll · 2.0.0 · modo sin conexión no disponible';});
+  }).catch(()=>{$('estadoConexion').textContent='Label Roll · 2.2.0 · modo sin conexión no disponible';});
   $('actualizarApp').addEventListener('click',()=>{if(registro?.waiting){actualizando=true;registro.waiting.postMessage({tipo:'ACTUALIZAR'});}});
   navigator.serviceWorker.addEventListener('controllerchange',()=>{if(actualizando)location.reload();else if(registro){$('actualizacion').hidden=false;$('actualizarApp').onclick=()=>location.reload();}});
  }

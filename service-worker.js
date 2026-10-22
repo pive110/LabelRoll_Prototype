@@ -1,8 +1,8 @@
 /* Una versión coherente de recursos y limpieza limitada a esta aplicación. */
 const CACHE_PREFIX='label-roll-calculator-';
-const CACHE_NAME=CACHE_PREFIX+'2.1.0';
+const CACHE_NAME=CACHE_PREFIX+'2.2.0';
 const BASE=new URL('./',self.location.href);
-const APP_SHELL=["./","./index.html","./visor-3d.html","./manifest.json","./icon-180.png?v=2.1.0","./favicon.ico?v=2.1.0","./manifest.json?v=2.1.0","./logo.svg?v=2.1.0","./styles.css?v=2.1.0","./cajas.js?v=2.1.0","./calculos.js?v=2.1.0","./cajas-selector.js?v=2.1.0","./interfaz.js?v=2.1.0","./menu.css?v=2.1.0","./bobina.js?v=2.1.0","./desperdicio.js?v=2.1.0","./continuar.js?v=2.1.0","./datos-compartidos.js?v=2.1.0","./nuevo-trabajo.js?v=2.1.0","./icon-512.png?v=2.1.0","./visor.css?v=2.1.0","./visor.js?v=embalaje-alternado-1"];
+const APP_SHELL=["./","./index.html","./visor-3d.html","./manifest.json","./icon-192.png","./icon-256.png","./icon-180.png?v=2.2.0","./favicon.ico?v=2.2.0","./manifest.json?v=2.2.0","./logo.svg?v=2.2.0","./styles.css?v=2.2.0","./cajas.js?v=2.2.0","./calculos.js?v=2.2.0","./cajas-selector.js?v=2.2.0","./interfaz.js?v=2.2.0","./menu.css?v=2.2.0","./bobina.js?v=2.2.0","./desperdicio.js?v=2.2.0","./continuar.js?v=2.2.0","./datos-compartidos.js?v=2.2.0","./nuevo-trabajo.js?v=2.2.0","./estetica.css?v=2.2.0","./ayudas-continuar.js?v=2.2.0","./icon-512.png?v=2.2.0","./visor.css?v=2.2.0","./visor.js?v=2.2.0"];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)));
 });
