@@ -1,7 +1,14 @@
 const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'_site');
 fs.mkdirSync(out,{recursive:true});
-const files=['index.html','styles.css','menu.css','estetica.css','ayudas-continuar.js','bobina.js','desperdicio.js','continuar.js','datos-compartidos.js','nuevo-trabajo.js','cajas.js','calculos.js','cajas-selector.js','interfaz.js','visor-3d.html','visor.js','visor.css','service-worker.js','manifest.json','logo.svg','favicon.ico','icon-180.png','icon-192.png','icon-256.png','icon-512.png'];
-for(const file of files)fs.copyFileSync(path.join(root,file),path.join(out,file));
+const portal=['index.html','acceso.css','acceso.js','service-worker.js'];
+const iconos=['logo.svg','favicon.ico','icon-180.png','icon-192.png','icon-256.png','icon-512.png'];
+const permitidos=new Set([...portal,...iconos,'manifest.json','.nojekyll']);
+for(const file of fs.readdirSync(out))if(!permitidos.has(file))throw Error('La salida contiene archivos de otra publicación. Usa una carpeta _site vacía.');
+for(const file of portal)fs.copyFileSync(path.join(root,'acceso',file),path.join(out,file));
+for(const file of iconos)fs.copyFileSync(path.join(root,file),path.join(out,file));
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'manifest.json'),'utf8'));
+manifest.name='Label Roll · Producción';manifest.short_name='Label Roll';
+fs.writeFileSync(path.join(out,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 fs.writeFileSync(path.join(out,'.nojekyll'),'');
-console.log(`Publicación preparada: ${files.length} archivos de la aplicación.`);
+console.log('GitHub Pages preparado: acceso a la versión con servidor, sin datos privados.');

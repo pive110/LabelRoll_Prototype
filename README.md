@@ -1,6 +1,10 @@
 # Label Roll Calculator
 
-Calculadora de producción de rollos y embalaje. Interfaz adaptable, tema claro/oscuro y funcionamiento sin conexión después de la primera carga.
+La dirección de GitHub Pages abre automáticamente la versión actual de Label Roll · Producción, alojada con servidor para usuarios, permisos y telemetría.
+
+[Versión actual con servidor](https://label-roll-operarios-110.pivedelta.chatgpt.site/)
+
+GitHub Pages no ejecuta el servidor ni guarda claves o datos de los usuarios. El acceso requiere conexión a internet. `acceso/` contiene la entrada publicada y la migración de las instalaciones antiguas; los archivos originales de la calculadora se conservan como referencia y no forman parte de la publicación actual.
 
 [Abrir la aplicación](https://pive110.github.io/calculadora-rollos/)
 
@@ -16,7 +20,9 @@ pnpm test
 pnpm build
 ```
 
-`_site/` contiene exclusivamente los archivos que se publican. Las dependencias solo se utilizan durante desarrollo y pruebas.
+`_site/` contiene exclusivamente el acceso público, los iconos y el worker de migración. Las dependencias solo se utilizan durante desarrollo y pruebas. El constructor utiliza una lista cerrada de archivos: no incluye carpetas privadas, contraseñas, datos de usuarios ni el código del servidor.
+
+La versión anterior se conserva en la etiqueta `backup/github-pages-pre-migracion-2026-10-28`. Para volver atrás, restaura esa revisión y vuelve a ejecutar la publicación de Pages.
 
 ## Organización
 
