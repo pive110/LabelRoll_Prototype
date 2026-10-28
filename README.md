@@ -2,7 +2,7 @@
 
 Calculadora de producción de rollos y embalaje. Interfaz adaptable, tema claro/oscuro y funcionamiento sin conexión después de la primera carga.
 
-[Abrir la aplicación](https://pive110.github.io/calculadora-rollos/)
+[Abrir la aplicación](https://pive110.github.io/LabelRoll_Prototype/)
 
 ## Desarrollo
 
