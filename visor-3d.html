@@ -4,20 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Label Roll · Vista de embalaje</title>
-<link rel="stylesheet" href="visor.css?v=2.2.0">
+<link rel="stylesheet" href="visor.css?v=2.2.11">
 </head>
 <body>
 <main>
 <section>
-  <div class="heading"><h2>Vista isométrica</h2><span class="tag" id="viewKind">CAPACIDAD MÁXIMA</span></div>
+  <div class="heading" hidden><h2>Vista isométrica</h2><span class="tag" id="viewKind">CAPACIDAD MÁXIMA</span></div>
   <svg id="scene" viewBox="0 0 900 850" role="img" aria-label="Simulación isométrica de embalaje con cilindros verticales"></svg>
-  <div class="controls">
+  <div class="controls" hidden>
     <button id="play" class="control play" type="button" aria-label="Reproducir animación" title="Reproducir / pausar"><svg id="playIcon" viewBox="0 0 24 24"><path d="M7 4 20 12 7 20Z"/></svg></button>
     <button id="reset" class="control reset" type="button" aria-label="Reiniciar animación" title="Reiniciar"><svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1-7.75 10h2.1A6 6 0 1 0 12 6c-1.66 0-3.17.67-4.24 1.76L11 11H3V3l3.34 3.34A7.95 7.95 0 0 1 12 4Z"/></svg></button>
   </div>
-  <div class="controls-extra"><button id="finish" type="button">Ver resultado final</button><label for="speed">Velocidad</label><select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></div>
-  <div class="progress" aria-hidden="true"><div id="progressFill"></div></div>
-  <p class="status" id="status" aria-live="polite">Pulsa ▶ para iniciar la animación</p>
+  <div class="controls-extra" hidden><button id="finish" type="button">Ver resultado final</button><label for="speed">Velocidad</label><select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></div>
+  <div hidden class="progress" aria-hidden="true"><div id="progressFill"></div></div>
+  <p hidden class="status" id="status" aria-live="polite">Pulsa ▶ para iniciar la animación</p>
 </section>
 <section>
   <div class="heading"><h2>Distribución calculada</h2><span class="tag">EJE VERTICAL</span></div>
@@ -35,6 +35,6 @@
   <p class="vista-nota">Capacidad geométrica sin holgura añadida. Los rollos se representan con el diámetro del rollo completo.</p>
 </section>
 </main>
-<script src="visor.js?v=2.2.0" defer></script>
+<script src="visor.js?v=2.2.11" defer></script>
 </body>
 </html>

@@ -62,7 +62,7 @@
   const modo=p.modo==='iguales'?'Rollos iguales y pedido exacto':p.modo==='capacidad'?'Máximo aprovechamiento con último rollo parcial':'Etiquetas por rollo indicadas manualmente';
   let html='<p><b>Reparto:</b> '+modo+'. Último rollo: '+ent(p.ultimo)+' etiquetas · Ø '+fmt(p.Dultimo)+' mm.</p><p><b>Material:</b> avance '+fmt(p.Av)+' mm + separación '+fmt(p.S)+' mm · espesor '+fmt(p.e,5)+' mm · mandril '+fmt(p.Di)+' mm.</p>';
   if(o)html+='<p><b>'+o.nombre+':</b> '+o.L+' × '+o.A+' × '+o.H+' mm · '+ent(o.patron.capa)+' rollos/capa × '+ent(o.capas)+' capas · patrón '+o.patron.nombre+'.</p><p><b>Hueco superior:</b> '+fmt(o.huecoSuperior)+' mm · '+ent(o.huecos)+' posiciones libres en el conjunto de cajas.</p>';
-  html+='<p><b>Criterio:</b> menor número de cajas; en empate, menor volumen total. Un único formato de caja por pedido, rollos verticales, comparando cuadrícula y patrón alternado en ambos sentidos, sin holgura añadida. Se elige el mejor patrón probado; no se garantiza el máximo de todas las disposiciones posibles. No incluye coste, peso ni disponibilidad.</p>';
+  html+='<p><b>Criterio:</b> más rollos por palet; en empate, menos cajas y menor volumen total. Un único formato de caja por pedido, rollos verticales, comparando cuadrícula y patrón alternado en ambos sentidos, sin holgura añadida. Se elige el mejor patrón probado; no se garantiza el máximo de todas las disposiciones posibles. No incluye coste, peso ni disponibilidad.</p>';
   html+='<p>El check confirma el reparto previsto, no la cantidad realmente fabricada. La capacidad geométrica requiere comprobar las medidas interiores y el ajuste físico.</p>';
   if(o&&o.capacidad>300)html+='<p>La vista 3D admite hasta 300 rollos por caja.</p>';
   $('contenidoTecnico').innerHTML=html;$('detalleTecnico').hidden=false;
@@ -74,7 +74,7 @@
   $('resumenCajas').textContent=incompleta?ent(completas)+' completas + 1 caja con '+ent(o.ultimos)+' '+(o.ultimos===1?'rollo':'rollos'):ent(completas)+' '+(completas===1?'caja completa':'cajas completas');
   $('resumenCajas').hidden=false;
   mostrarComparacionCajas(opciones,recomendada,o);
-  $('abrirVista').hidden=o.capacidad>300;detalle();
+  $('abrirVista').hidden=true;detalle();
  }
  function calcular(){
   invalidarPedido('Revisando los datos…','pendiente');campos.forEach(limpiarError);
@@ -90,7 +90,7 @@
   if(!$('anchoRollo').value.trim())avisos.push('Introduce el ancho del rollo para calcular las cajas.');
   else try{
    ancho=C.numero($('anchoRollo').value,'anchoRollo');opciones=C.optimizarCajas(p.D,ancho,p.rollos);recomendada=C.recomendar(opciones);
-   mostrarComparacionCajas(opciones,recomendada,null);mostrarSelectorCajas(opciones,recomendada,seleccionarCaja);
+   mostrarComparacionCajas(opciones,recomendada,null);mostrarSelectorCajas(opciones,recomendada,seleccionarCaja,abrirVista);
   }catch(error){
    ancho=null;errorDato(error);mensajeEstado('Producción calculada. Corrige el ancho para obtener el embalaje.','parcial');
   }
@@ -108,16 +108,23 @@
  function abrirVista(){
   if(!pedido||!seleccionada||seleccionada.capacidad>300)return;
   focoAnterior=document.activeElement;$('overlayVista').hidden=false;$('calculadora').inert=true;document.body.classList.add('vista-abierta');
-  $('tipoVista').value=pedido.rollos<seleccionada.capacidad?'ultima':'capacidad';
+  $('tipoVista').value='capacidad';
   document.querySelectorAll('[data-tipo-vista]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tipoVista===$('tipoVista').value)));
   $('visorOriginal').src='./visor-3d.html';$('cerrarVista').focus();
  }
- function imprimir(){
+ function imprimir(descargar=false){
   if(!pedido)return;
   const p=pedido,o=seleccionada;
   const filas=[['Etiquetas solicitadas',ent(p.total)],['Etiquetas por rollo',ent(p.etiquetas)],['Rollos',ent(p.rollos)],['Etiquetas del último rollo',ent(p.ultimo)],['Diámetro teórico',fmt(p.D)+' mm'],['Metros por rollo completo',fmt(p.metros)+' m'],['Mandril',fmt(p.Di)+' mm'],['Avance / separación',fmt(p.Av)+' / '+fmt(p.S)+' mm'],['Espesor',fmt(p.e,5)+' mm'],['Ancho',ancho?fmt(ancho)+' mm':'Sin calcular'],['Caja seleccionada',o?o.nombre:'Sin embalaje calculado'],['Disposición',o?o.patron.nombre+' · '+ent(o.patron.capa)+' rollos/capa × '+ent(o.capas)+' capas':'—'],['Número de cajas',o?ent(o.cajas):'—'],['Rollos de la última caja',o?ent(o.ultimos):'—']];
   $('fichaImpresion').innerHTML='<h2>Ficha de producción · planificación</h2><p>'+new Date().toLocaleDateString('es-ES')+'</p><table>'+filas.map(([k,v])=>'<tr><th scope="row">'+k+'</th><td>'+v+'</td></tr>').join('')+'</table><p>Cálculo geométrico sin holguras añadidas. Confirmar el ajuste físico de las cajas.</p>';
-  window.print();
+  if(descargar){
+   const palet=o?'<p><b>Palet:</b> '+ent(o.cajasPorPalet)+' cajas · '+ent(o.rollosPorPalet)+' rollos/palet · '+ent(o.palets)+' palets para el pedido</p>':'';
+   const html='<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pedido · Label Roll</title><style>body{font:16px system-ui,sans-serif;max-width:850px;margin:40px auto;padding:0 20px;color:#202024}h2{border-bottom:3px solid #e21d30;padding-bottom:12px}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:10px;border-bottom:1px solid #ddd}th{width:55%}p{line-height:1.5}</style><body>'+$('fichaImpresion').innerHTML+palet+'</body></html>';
+   const enlace=document.createElement('a'),url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+   enlace.href=url;enlace.download='pedido-label-roll-'+new Date().toISOString().replace(/[:.]/g,'-')+'.html';
+   document.body.appendChild(enlace);enlace.click();enlace.remove();URL.revokeObjectURL(url);
+   $('estadoResultados').textContent='Ficha del pedido preparada para descargar.';
+  }else window.print();
  }
  function aplicarTema(oscuro){
   document.body.classList.toggle('theme-dark',oscuro);$('cambiarTema').setAttribute('aria-pressed',String(oscuro));
@@ -157,21 +164,21 @@
  $('calcularMuestra').addEventListener('click',calcularMuestra);$('usarMuestra').addEventListener('click',usarMuestra);$('calcularEmbalaje').addEventListener('click',calcular);
  $('abrirVista').addEventListener('click',abrirVista);$('cerrarVista').addEventListener('click',cerrarVista);$('tipoVista').addEventListener('change',enviarVista);$('visorOriginal').addEventListener('load',enviarVista);
  document.querySelectorAll('[data-tipo-vista]').forEach(b=>b.addEventListener('click',()=>{$('tipoVista').value=b.dataset.tipoVista;enviarVista();}));
- $('imprimirFicha').addEventListener('click',imprimir);
+ $('imprimirFicha').addEventListener('click',()=>imprimir(true));
  $('cambiarTema').addEventListener('click',()=>{
   aplicarTema(!document.body.classList.contains('theme-dark'));
  });
  document.addEventListener('keydown',event=>{
   if($('overlayVista').hidden)return;
   if(event.key==='Escape'){event.preventDefault();cerrarVista();}
-  if(event.key==='Tab'&&event.shiftKey&&document.activeElement===$('cerrarVista')){event.preventDefault();$('visorOriginal').contentWindow.postMessage({tipo:'LABEL_ROLL_FOCUS_LAST'},location.protocol==='file:'?'*':location.origin);}
+  if(event.key==='Tab'){event.preventDefault();$('cerrarVista').focus();}
  });
  window.addEventListener('message',event=>{
   if(event.source!==$('visorOriginal').contentWindow||$('overlayVista').hidden)return;
   if(location.protocol!=='file:'&&event.origin!==location.origin)return;
   if(event.data?.tipo==='LABEL_ROLL_CLOSE')cerrarVista();
   if(event.data?.tipo==='LABEL_ROLL_FOCUS_NEXT')$('cerrarVista').focus();
-  if(event.data?.tipo==='LABEL_ROLL_FOCUS_PREVIOUS')document.querySelector('[data-tipo-vista="ultima"]').focus();
+  if(event.data?.tipo==='LABEL_ROLL_FOCUS_PREVIOUS')$('cerrarVista').focus();
  });
  function conexion(){
   $('estadoConexion').textContent=location.protocol==='file:'?'Label Roll Calculator':navigator.onLine?'Label Roll Calculator':'Sin conexión · los cálculos siguen disponibles';

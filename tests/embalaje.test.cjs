@@ -4,9 +4,9 @@ const C=require('../calculos.js'),{parseHTML}=require('linkedom');
 const read=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
 test('recomendación: menos cajas antes que volumen; empate por volumen',()=>{
  const opciones=[{id:'pequena',capacidad:8,cajas:11,volumenTotal:200,cortes:0},{id:'grande',capacidad:10,cajas:9,volumenTotal:300,cortes:0},{id:'ajustada',capacidad:10,cajas:9,volumenTotal:270,cortes:1}];
- assert.equal(C.recomendar(opciones).id,'ajustada');
+ assert.equal(C.recomendar(opciones,'cajas').id,'ajustada');
  assert.equal(C.recomendar(opciones,'volumen').id,'pequena');
- assert.equal(C.recomendar([{capacidad:0,cajas:0,volumenTotal:0},...opciones]).id,'ajustada');
+ assert.equal(C.recomendar([{capacidad:0,cajas:0,volumenTotal:0},...opciones],'cajas').id,'ajustada');
 });
 function comprobar(p,L,A,D){
  assert.equal(p.centros.length,p.capa);
@@ -59,7 +59,7 @@ test('visor: recibe patrón real, muestra 10 y última caja de 1; rechaza solape
  sandbox.cargarResultado({...d,centros:d.centros.map(()=>d.centros[0])});assert.equal(document.getElementById('count').textContent,'1 / 1');
  sandbox.cargarResultado({...d,centros:[{x:0,y:0}]});assert.equal(document.getElementById('count').textContent,'1 / 1');
 });
-test('interfaz y mensaje al visor usan las mismas posiciones que el cálculo',()=>{
+test('interfaz, visor y guardado conservan los datos de la caja elegida',async()=>{
  const {window,document}=parseHTML(read('index.html'));
  for(const el of document.querySelectorAll('select')){let val=el.querySelector('option').getAttribute('value');Object.defineProperty(el,'value',{get:()=>val,set:v=>val=v});}
  for(const el of document.querySelectorAll('input,button,select')){el.focus=()=>{};el.getClientRects=()=>[{}];}
@@ -72,11 +72,24 @@ test('interfaz y mensaje al visor usan las mismas posiciones que el cálculo',()
  n1.click();assert.equal($('rCaja').textContent,'10');
  assert.equal($('rCajas').textContent,'3');
  assert.equal($('resumenCajas').textContent,'2 completas + 1 caja con 1 rollo');
- assert.equal($('resumenCajas').parentElement,$('rCajas').parentElement);assert.match($('comparacion').textContent,/Alternado/);
+ assert.equal($('resumenCajas').parentElement,$('rCajas').parentElement);assert.equal(document.querySelector('.caja-detalle'),null);
  let mensaje;Object.defineProperty($('visorOriginal'),'contentWindow',{value:{postMessage:m=>mensaje=m}});
- sandbox.LabelRollApp.abrirVista();$('tipoVista').value='capacidad';sandbox.LabelRollApp.enviarVista();
+ document.querySelectorAll('.caja-vista')[2].click();assert.equal($('overlayVista').hidden,false);assert.equal(sandbox.LabelRollApp.getEstado().seleccionada.id,'n1-250');assert.equal($('abrirVista').hidden,true);$('tipoVista').value='capacidad';sandbox.LabelRollApp.enviarVista();
  assert.equal(mensaje.datos.centros.length,5);assert.equal(mensaje.datos.nz,2);assert.equal(mensaje.datos.total,10);
  $('tipoVista').value='ultima';sandbox.LabelRollApp.enviarVista();assert.equal(mensaje.datos.total,1);
+ const spb=[...document.querySelectorAll('.caja-opcion')].find(b=>b.getAttribute('aria-label').startsWith('SPB,'));
+ assert.ok(spb);assert.ok(!/NaN|undefined/.test(spb.innerHTML));assert.match(spb.textContent,/rollos\/palet/);spb.click();
+ assert.equal($('comparacion').hidden,true);assert.equal($('comparacion').textContent,'');assert.equal(document.querySelectorAll('.caja-opcion .caja-icono svg').length,5);assert.match(spb.querySelector('.caja-capacidad').textContent,/rollos\/caja/);assert.match(spb.querySelector('.caja-palet').textContent,/rollos\/palet/);assert.ok(!/NaN|undefined/.test($('comparacion').textContent));
+ $('tipoVista').value='capacidad';sandbox.LabelRollApp.enviarVista();
+ assert.deepEqual([mensaje.datos.L,mensaje.datos.A,mensaje.datos.H],[380,380,300]);
+ assert.equal(mensaje.datos.total,Number($('rCaja').textContent));
+ let archivo,revocado=false;sandbox.Blob=Blob;sandbox.URL={createObjectURL:b=>{archivo=b;return 'blob:pedido';},revokeObjectURL:()=>{revocado=true;}};
+ sandbox.LabelRollApp.cerrarVista();$('imprimirFicha').click();
+ assert.ok(archivo);assert.equal(revocado,true);const html=await archivo.text();
+ assert.match(html,/SPB/);assert.match(html,/rollos\/palet/);assert.match(html,/21.000/);assert.match(html,/charset="utf-8"/);
+ assert.match($('estadoResultados').textContent,/descargar/);
+
+
 });
 
 test('prueba real N1 de un corte: Ø111 permite 8 rollos por capa sin solapes',()=>{
@@ -91,4 +104,47 @@ test('compara los patrones en pedidos futuros y conserva cuadrícula en empate',
  const ocho=C.patronBase(390,290,111);assert.deepEqual(ocho.comparacion,{cuadricula:6,alternado:8});assert.equal(ocho.nombre,'Alternado');
  const cinco=C.patronBase(390,290,135);assert.deepEqual(cinco.comparacion,{cuadricula:4,alternado:5});
  const empate=C.patronBase(270,270,135);assert.equal(empate.capa,4);assert.equal(empate.nombre,'Cuadrícula');
+});
+
+test('SPB: capacidad, recomendación, última caja y geometría 3D de 380×380×300',()=>{
+ const opciones=C.optimizarCajas(190,100,25),spb=opciones.find(o=>o.id==='spb');
+ assert.deepEqual([spb.L,spb.A,spb.H],[380,380,300]);
+ assert.equal(spb.capacidad,12);assert.equal(spb.capas,3);assert.equal(spb.cajas,3);assert.equal(spb.ultimos,1);
+ assert.equal(C.recomendar(opciones).id,'spb');comprobar(spb.patron,380,380,190);
+ assert.equal(C.optimizarCajas(380,300,1).find(o=>o.id==='spb').capacidad,1);
+ assert.equal(C.optimizarCajas(381,100,1).find(o=>o.id==='spb').capacidad,0);
+ assert.equal(C.optimizarCajas(190,301,1).find(o=>o.id==='spb').capacidad,0);
+ const {window,document}=parseHTML(read('visor-3d.html'));
+ window.matchMedia=()=>({matches:true,addEventListener:()=>{}});
+ const sandbox={window,document,location:{protocol:'file:',origin:'null'},requestAnimationFrame:()=>1,cancelAnimationFrame:()=>{},console};
+ vm.createContext(sandbox);vm.runInContext(read('visor.js'),sandbox);
+ const datos={L:spb.L,A:spb.A,H:spb.H,D:190,Ar:100,Di:84,nz:spb.capas,total:spb.capacidad,centros:spb.patron.centros,patron:spb.patron.nombre,tipo:'capacidad'};
+ sandbox.cargarResultado(datos);assert.equal(document.getElementById('count').textContent,'12 / 12');
+ sandbox.cargarResultado({...datos,total:spb.ultimos,tipo:'ultima'});assert.equal(document.getElementById('count').textContent,'1 / 1');
+});
+
+test('palets: datos comprobados, prioridad por rollos y redondeo del pedido',()=>{
+ const opciones=C.optimizarCajas(135,100,1000);
+ for(const o of opciones){assert.equal(o.cajasPorPalet,o.id==='spb'?18:32);assert.equal(o.rollosPorPalet,o.capacidad*o.cajasPorPalet);assert.equal(o.palets,Math.ceil(o.cajas/o.cajasPorPalet));}
+ assert.equal(C.recomendar(opciones).rollosPorPalet,Math.max(...opciones.map(o=>o.rollosPorPalet)));
+ const datos=[{id:'n1',capacidad:10,rollosPorPalet:320,cajas:10,volumenTotal:100,cortes:0},{id:'spb',capacidad:16,rollosPorPalet:288,cajas:7,volumenTotal:90,cortes:0}];
+ assert.equal(C.recomendar(datos).id,'n1');assert.equal(C.recomendar(datos,'cajas').id,'spb');
+ for(const cantidad of [216,217]){const o=C.optimizarCajas(190,100,cantidad).find(o=>o.id==='spb');assert.equal(o.rollosPorPalet,216);assert.equal(o.palets,cantidad===216?1:2);}
+ assert.equal(C.recomendar(C.optimizarCajas(500,100,1)),null);
+});
+
+test('visor automático: llena, cierra y reinicia el bucle sin controles visibles',()=>{
+ const {window,document}=parseHTML(read('visor-3d.html'));
+ window.matchMedia=()=>({matches:false,addEventListener:()=>{}});
+ let siguiente;const sandbox={window,document,location:{protocol:'file:',origin:'null'},requestAnimationFrame:fn=>{siguiente=fn;return 1;},cancelAnimationFrame:()=>{},console};
+ vm.createContext(sandbox);vm.runInContext(read('visor.js'),sandbox);
+ sandbox.cargarResultado({L:200,A:200,H:100,D:190,Ar:100,Di:84,nz:1,total:1,centros:[{x:100,y:100}],patron:'Cuadrícula',tipo:'capacidad'});
+ assert.equal(typeof siguiente,'function');
+ for(let t=0;t<=1000;t+=100)siguiente(t);
+ assert.equal(document.getElementById('count').textContent,'1 / 1');
+ for(let t=1100;t<=5500;t+=100)siguiente(t);
+ assert.equal(document.getElementById('count').textContent,'0 / 1');
+ for(let t=5600;t<=6500;t+=100)siguiente(t);
+ assert.equal(document.getElementById('count').textContent,'1 / 1');
+ assert.equal(document.querySelector('.controls').hidden,true);assert.equal(document.querySelector('.controls-extra').hidden,true);
 });

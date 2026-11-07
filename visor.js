@@ -4,7 +4,7 @@ const NS='http://www.w3.org/2000/svg';
 const svg=document.getElementById('scene');
 let box={L:400,W:300,H:300};
 let roll={D:179.666062,width:45,core:84};
-const colors=['#E5E7EB','#75B5CD','#E8AA60','#A6A2DB','#80BD9E','#E56D74'];
+const colors=['#F5F5F5','#929298','#C9797E'];
 const DURATION=620,STAGGER=350,MAX_ROLLS=300;
 // Fases del cierre: pausa, dos solapas cortas, dos largas y precintado.
 const HOLD=900,SHORT_TIME=900,LONG_TIME=1000,TAPE_TIME=850;
@@ -111,8 +111,21 @@ function closureStatus(){
   return 'Aplicando cinta roja…';
 }
 function smooth(t){t=Math.min(1,Math.max(0,t));return t*t*(3-2*t);}
+function drawCuttingMat(){
+ const defs=el('defs');
+ const pattern=document.createElementNS(NS,'pattern');
+ for(const [key,value] of Object.entries({id:'cutting-grid',width:100,height:100,patternUnits:'userSpaceOnUse'}))pattern.setAttribute(key,String(value));
+ const minor=document.createElementNS(NS,'path');minor.setAttribute('d','M20 0V100M40 0V100M60 0V100M80 0V100M0 20H100M0 40H100M0 60H100M0 80H100');minor.setAttribute('fill','none');minor.setAttribute('stroke','#fff');minor.setAttribute('stroke-opacity','.065');minor.setAttribute('stroke-width','.65');
+ const major=document.createElementNS(NS,'path');major.setAttribute('d','M100 0H0V100');major.setAttribute('fill','none');major.setAttribute('stroke','#fff');major.setAttribute('stroke-opacity','.16');major.setAttribute('stroke-width','1');
+ pattern.append(minor,major);defs.append(pattern);
+ el('rect',{width:900,height:850,fill:'#000'});el('rect',{width:900,height:850,fill:'url(#cutting-grid)'});
+ const marks=el('g',{'aria-hidden':'true',opacity:'.22'});
+ const add=(tag,attrs,text)=>{const node=document.createElementNS(NS,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));if(text!==undefined)node.textContent=text;marks.append(node);};
+ for(let x=20;x<900;x+=20){const major=x%100===0;add('path',{d:'M'+x+' 0v'+(major?14:7),stroke:'#fff','stroke-width':'.7'});if(major)add('text',{x:x+4,y:24,fill:'#fff','font-size':10,'font-family':'monospace',stroke:'none'},x/100);}
+ for(let y=20;y<850;y+=20){const major=y%100===0;add('path',{d:'M0 '+y+'h'+(major?14:7),stroke:'#fff','stroke-width':'.7'});if(major)add('text',{x:18,y:y+4,fill:'#fff','font-size':10,'font-family':'monospace',stroke:'none'},y/100);}
+}
 function render(){
- svg.replaceChildren();boxBack();let settled=0;const visible=[];
+ svg.replaceChildren();drawCuttingMat();boxBack();let settled=0;const visible=[];
  positions.forEach((p,i)=>{const t=(elapsed-i*STAGGER)/DURATION;if(t<=0)return;
  const start=box.H+Math.max(roll.width,box.H*.18),z=start+(p.z-start)*smooth(t);
  visible.push({...p,z});if(t>=1)settled++;
@@ -132,7 +145,7 @@ function render(){
 function syncIcon(){$('playIcon').innerHTML=playing?'<path d="M6 4h4v16H6z M14 4h4v16h-4z"/>':'<path d="M7 4 20 12 7 20Z"/>';
  $('play').setAttribute('aria-label',playing?'Pausar animación':'Reproducir animación');$('play').disabled=positions.length===0;}
 function tick(ts){if(!playing)return;if(previous===null)previous=ts;elapsed+=Math.min(100,ts-previous)*velocidad;previous=ts;
- if(elapsed>=TOTAL){elapsed=TOTAL;playing=false;complete=true;raf=null;render();syncIcon();return;}
+ if(elapsed>=TOTAL+1200){elapsed=0;complete=false;previous=ts;}
  render();raf=requestAnimationFrame(tick);
 }
 function reset(){if(raf!==null)cancelAnimationFrame(raf);raf=null;elapsed=0;previous=null;playing=false;complete=false;render();syncIcon();}
@@ -181,16 +194,16 @@ function cargarResultado(d){
    const t=document.createElement('span');t.textContent=`Capa ${i+1}`;div.append(s,t);$('legend').append(div);
  }
  reset();
- if(movimientoReducido.matches)verFinal();
+ if(movimientoReducido.matches)verFinal();else toggle();
 }
 function verFinal(){if(raf!==null)cancelAnimationFrame(raf);raf=null;playing=false;elapsed=TOTAL;complete=true;render();syncIcon();}
 $('finish').addEventListener('click',verFinal);
 $('speed').addEventListener('change',()=>{velocidad=Number($('speed').value);});
-movimientoReducido.addEventListener('change',event=>{if(event.matches)verFinal();});
+movimientoReducido.addEventListener('change',event=>{if(event.matches)verFinal();else if(positions.length){reset();toggle();}});
 window.addEventListener('message',event=>{
  if(event.source!==window.parent)return;
  if(location.protocol!=='file:'&&event.origin!==location.origin)return;
- if(event.data?.tipo==='LABEL_ROLL_FOCUS_LAST')$('speed').focus();
+ if(event.data?.tipo==='LABEL_ROLL_FOCUS_LAST')avisarPadre('LABEL_ROLL_FOCUS_NEXT');
  if(event.data?.tipo==='LABEL_ROLL_VISTA')cargarResultado(event.data.datos);
  if(event.data?.tipo==='LABEL_ROLL_STOP')reset();
 });
@@ -199,7 +212,5 @@ $('status').textContent='Abre VISTA 3D desde la calculadora';
 function avisarPadre(tipo){window.parent.postMessage({tipo},location.protocol==='file:'?'*':location.origin);}
 document.addEventListener('keydown',event=>{
  if(event.key==='Escape'){event.preventDefault();avisarPadre('LABEL_ROLL_CLOSE');}
- const foco=document.activeElement,primero=$('play').disabled?$('reset'):$('play');
- if(event.key==='Tab'&&event.shiftKey&&foco===primero){event.preventDefault();avisarPadre('LABEL_ROLL_FOCUS_PREVIOUS');}
- if(event.key==='Tab'&&!event.shiftKey&&foco===$('speed')){event.preventDefault();avisarPadre('LABEL_ROLL_FOCUS_NEXT');}
+ if(event.key==='Tab'){event.preventDefault();avisarPadre('LABEL_ROLL_FOCUS_NEXT');}
 });

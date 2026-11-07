@@ -101,11 +101,13 @@
    if(!Number.isSafeInteger(capacidad))throw new ErrorDato('anchoRollo','La capacidad calculada es demasiado grande. Revisa el ancho y el diámetro del rollo.');
    const cajas=capacidad?Math.ceil(rollos/capacidad):0,volumenTotal=cajas*caja.L*caja.A*caja.H;
    if(!Number.isFinite(volumenTotal))throw new ErrorDato('anchoRollo','El volumen calculado está fuera de rango.');
-   return {...caja,patron,capas,capacidad,cajas,volumenTotal,ultimos:capacidad?rollos-(cajas-1)*capacidad:0,huecos:capacidad?cajas*capacidad-rollos:0,huecoSuperior:capacidad?caja.H-capas*Ar:0};
+   const rollosPorPalet=capacidad*caja.cajasPorPalet,palets=capacidad?Math.ceil(cajas/caja.cajasPorPalet):0;
+   if(!Number.isSafeInteger(rollosPorPalet))throw new ErrorDato('anchoRollo','La capacidad por palet calculada está fuera de rango.');
+   return {...caja,patron,capas,capacidad,cajas,volumenTotal,rollosPorPalet,palets,ultimos:capacidad?rollos-(cajas-1)*capacidad:0,huecos:capacidad?cajas*capacidad-rollos:0,huecoSuperior:capacidad?caja.H-capas*Ar:0};
   });
  }
- function recomendar(opciones,criterio='cajas'){
-  return opciones.filter(o=>o.capacidad>0).sort((a,b)=>criterio==='cajas'?(a.cajas-b.cajas||a.volumenTotal-b.volumenTotal||a.cortes-b.cortes):(a.volumenTotal-b.volumenTotal||a.cajas-b.cajas||b.capacidad-a.capacidad))[0]||null;
+ function recomendar(opciones,criterio='palet'){
+  return opciones.filter(o=>o.capacidad>0).sort((a,b)=>criterio==='palet'?(b.rollosPorPalet-a.rollosPorPalet||a.cajas-b.cajas||a.volumenTotal-b.volumenTotal||a.cortes-b.cortes):criterio==='cajas'?(a.cajas-b.cajas||a.volumenTotal-b.volumenTotal||a.cortes-b.cortes):(a.volumenTotal-b.volumenTotal||a.cajas-b.cajas||b.capacidad-a.capacidad))[0]||null;
  }
  return Object.freeze({ErrorDato,numero,mayorDivisor,diametro,calcularPedido,calcularEspesor,patronBase,optimizarCajas,recomendar});
 });

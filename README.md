@@ -4,6 +4,8 @@ Calculadora de producción de rollos y embalaje. Interfaz adaptable, tema claro/
 
 [Abrir la aplicación](https://pive110.github.io/calculadora-rollos/)
 
+[Tutorial de primera utilización y guion de demostración](docs/TUTORIAL.md)
+
 ## Desarrollo
 
 La aplicación puede abrirse directamente con `index.html`. Las pruebas de instalación y caché requieren HTTP o HTTPS.
@@ -31,7 +33,7 @@ pnpm build
 
 ## Cálculo y alcance
 
-El check confirma el total planificado. Con diámetro máximo se puede elegir reparto exacto con rollos iguales o último rollo parcial. El embalaje compara cuadrícula y patrones alternados, incluido paso ampliado. Recomienda menos cajas y, en empate, menor volumen total; conserva cuadrícula en empates de capacidad. No es una búsqueda exhaustiva del máximo. Las medidas interiores y el ajuste físico deben validarse en producción.
+El check confirma el total planificado. Con diámetro máximo se puede elegir reparto exacto con rollos iguales o último rollo parcial. El embalaje compara cuadrícula y patrones alternados, incluido paso ampliado. Recomienda la mayor capacidad de rollos por palet completo (32 cajas para CampoFr y todas las N1; 18 para SPB de 380 × 380 × 300 mm). En empate prioriza menos cajas y menor volumen total; conserva cuadrícula en empates de capacidad. No es una búsqueda exhaustiva del máximo. Las medidas interiores y el ajuste físico deben validarse en producción.
 
 ## Versiones y recuperación
 
