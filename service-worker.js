@@ -1,8 +1,8 @@
 /* Una versión coherente de recursos y limpieza limitada a esta aplicación. */
 const CACHE_PREFIX='label-roll-calculator-';
-const CACHE_NAME=CACHE_PREFIX+'2.2.11';
+const CACHE_NAME=CACHE_PREFIX+'2.2.12';
 const BASE=new URL('./',self.location.href);
-const APP_SHELL=["./","./index.html","./visor-3d.html","./manifest.json","./icon-192.png","./icon-256.png","./icon-180.png?v=2.2.11","./favicon.ico?v=2.2.11","./manifest.json?v=2.2.11","./logo.svg?v=2.2.11","./styles.css?v=2.2.11","./cajas.js?v=2.2.11","./calculos.js?v=2.2.11","./cajas-selector.js?v=2.2.11","./interfaz.js?v=2.2.11","./menu.css?v=2.2.11","./bobina.js?v=2.2.11","./desperdicio.js?v=2.2.11","./continuar.js?v=2.2.11","./datos-compartidos.js?v=2.2.11","./nuevo-trabajo.js?v=2.2.11","./estetica.css?v=2.2.11","./ayudas-continuar.js?v=2.2.11","./icon-512.png?v=2.2.11","./visor.css?v=2.2.11","./visor.js?v=2.2.11"];
+const APP_SHELL=["./","./index.html","./visor-3d.html","./manifest.json","./icon-192.png","./icon-256.png","./icon-180.png?v=2.2.12","./favicon.ico?v=2.2.12","./manifest.json?v=2.2.12","./logo.svg?v=2.2.12","./styles.css?v=2.2.12","./cajas.js?v=2.2.12","./calculos.js?v=2.2.12","./cajas-selector.js?v=2.2.12","./interfaz.js?v=2.2.12","./menu.css?v=2.2.12","./bobina.js?v=2.2.12","./desperdicio.js?v=2.2.12","./continuar.js?v=2.2.12","./datos-compartidos.js?v=2.2.12","./nuevo-trabajo.js?v=2.2.12","./estetica.css?v=2.2.12","./ayudas-continuar.js?v=2.2.12","./icon-512.png?v=2.2.12","./visor.css?v=2.2.12","./visor.js?v=2.2.12"];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)));
 });
